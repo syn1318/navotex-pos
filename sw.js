@@ -1,5 +1,5 @@
 // Navotex service worker — change VERSION whenever index.html changes
-const VERSION='1.0.9',CACHE='navotex-'+VERSION;
+const VERSION='1.0.11',CACHE='navotex-'+VERSION;
 const CORE=['./','./index.html','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/apple-touch-icon.png','./icons/icon-maskable-512.png','./icons/navotex-logo.svg'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('navotex-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});

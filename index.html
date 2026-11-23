@@ -457,6 +457,42 @@ html,body{-webkit-text-size-adjust:100%;overscroll-behavior:none}
 }
 @media(max-width:360px){.grid4{grid-template-columns:1fr!important}}
 
+.pc{position:relative}
+.pc .fv{position:absolute;top:5px;right:5px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:16px;line-height:1;color:#b8bfd0;background:var(--card);border:1px solid var(--bd);z-index:2}
+.pc .fv.on{color:#f5a623;border-color:#f5a623}
+.pc.arr{cursor:grab;border-style:dashed;border-color:var(--pri)}
+.pc .ar{display:flex;gap:4px;margin-top:2px}.pc .ar span{flex:1;text-align:center;padding:6px 0;border-radius:8px;border:1px solid var(--bd);background:var(--bg);font-size:13px;cursor:pointer}
+.pc.drag{opacity:.35}
+/* ---- v1.0.10: consistent form controls on iOS / Android (no system look, equal heights) ---- */
+input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]):not([type=file]),select,textarea{-webkit-appearance:none;appearance:none;box-sizing:border-box;border-radius:11px}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237a8194' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;background-size:14px;padding-right:32px;text-overflow:ellipsis}
+select[multiple]{background-image:none;padding-right:11px}
+input[type=date],input[type=time],input[type=month],input[type=datetime-local]{display:block;line-height:1.25;text-align:left;min-width:0}
+input[type=date]::-webkit-date-and-time-value,input[type=time]::-webkit-date-and-time-value{text-align:left;min-height:1.25em;margin:0}
+input[type=date]::-webkit-calendar-picker-indicator,input[type=time]::-webkit-calendar-picker-indicator{opacity:.65}
+input[type=number]{-moz-appearance:textfield}
+@media(pointer:coarse){
+  input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]):not([type=file]),select{height:44px;min-height:44px;line-height:1.25}
+  textarea{min-height:88px}
+  .toolbar>*,.row>input,.row>select{min-height:44px}
+  .toolbar .btn,.row>.btn{height:44px}
+  input[type=checkbox],input[type=radio]{width:20px;height:20px}
+}
+/* ---- v1.0.11: modern colored KPI cards, centered bell badge */
+.card.kpi{position:relative;overflow:hidden;border:0!important;border-radius:18px;padding:20px 18px;color:#fff;box-shadow:0 8px 22px -10px rgba(0,0,0,.45)!important;isolation:isolate}
+.card.kpi:hover{border:0!important;transform:translateY(-1px)}
+.card.kpi.c1{background:linear-gradient(135deg,#6366f1,#8b5cf6)}
+.card.kpi.c2{background:linear-gradient(135deg,#10b981,#047857)}
+.card.kpi.c3{background:linear-gradient(135deg,#0ea5e9,#2563eb)}
+.card.kpi.c4{background:linear-gradient(135deg,#f59e0b,#ef4444)}
+.card.kpi .kic{position:absolute;right:-8px;bottom:-12px;width:84px;height:84px;border-radius:0;background:none!important;opacity:.16;z-index:-1;display:block}
+.card.kpi .kic .ico{width:84px;height:84px;stroke-width:1.6}
+.card.kpi .stat{position:relative;z-index:1}
+.card.kpi .stat .l{color:rgba(255,255,255,.88);font-weight:600}
+.card.kpi .stat .v,.card.kpi .stat .v.warn,.card.kpi .stat .v.err{color:#fff;font-size:26px;text-shadow:0 1px 2px rgba(0,0,0,.18)}
+.card.kpi .stat .s{color:rgba(255,255,255,.85)}
+.card.kpi .badge,.card.kpi .badge.ok,.card.kpi .badge.warn{background:rgba(255,255,255,.22);color:#fff;border:1px solid rgba(255,255,255,.3);padding:2px 8px;text-transform:none;letter-spacing:0;font-size:11px;font-weight:700;width:fit-content}
+.bell .bn{display:flex;align-items:center;justify-content:center;text-align:center;padding:0;min-width:18px;height:18px;line-height:18px;box-sizing:border-box;font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
@@ -475,7 +511,7 @@ const KEY='spos_db_v1', SKEY='spos_session', PKEY='spos_prefs';
 const COLORS={indigo:'#4f46e5',emerald:'#059669',rose:'#e11d48',amber:'#d97706',sky:'#0284c7',violet:'#7c3aed'};
 let DB=null;
 const S={user:null,branchId:null,route:'dashboard',carts:{},
-  inv:{tab:'products',q:'',cat:'',low:false,mq:'',mtype:''},
+  inv:{tab:'products',q:'',cat:'',low:false,mq:'',mtype:'',sel:{}},
   pur:{tab:'list',q:''},
   sal:{from:'',to:'',q:'',branch:'',channel:'all',status:'all'},
   rep:{type:'summary',preset:'month',from:'',to:'',branch:'all',channel:'all'},
@@ -637,8 +673,8 @@ function abBoxRender(){
      this page only holds the matching PUBLIC key, so keys cannot be forged.
    - This is a deterrent, not DRM: a determined person can edit a local HTML file.
    ===================================================================== */
-const VENDOR={name:'',phone:'',viber:'',email:'',web:''};   // <- put YOUR contact details here (shown on the license screen)
-const APP_VERSION='1.0.9';
+const VENDOR={name:'Navotex POS',phone:'09794890013',viber:'',email:'',web:''};   // <- put YOUR contact details here (shown on the license screen)
+const APP_VERSION='1.0.11';
 const TRIAL_DAYS=30,LKEY='store-pos-lic',DAYMS=864e5;
 const LIC_PUB={"kty":"EC","crv":"P-256","x":"EqX2k2NroJBFQski2Gji-zCc0dyRScDJ6Kt7gq67mAI","y":"0sYCuexVyptN4wj4C-ofmr-D00lzefmcmndHMRDFABY"};
 const LIC={rec:null,pay:null,state:'trial',daysLeft:TRIAL_DAYS,tamper:false,fresh:false};
@@ -669,7 +705,10 @@ function licEval(){
 }
 const licLocked=()=>LIC.state==='expired'||LIC.state==='lapsed';
 const TRIAL_BRANCHES=3;
-const licBranchLimit=()=>LIC.state==='full'?((LIC.pay&&LIC.pay.br)?LIC.pay.br:Infinity):TRIAL_BRANCHES;
+/* ---- Plans: trial and keys without a plan count as Premium ---- */
+const licPlan=()=>{if(LIC.state!=='full'||!LIC.pay||!LIC.pay.plan)return 'Premium';return ['Standard','Pro','Premium'].includes(LIC.pay.plan)?LIC.pay.plan:'Premium'};
+const planWholesale=()=>licPlan()!=='Standard',planA4=()=>licPlan()!=='Standard';
+const licBranchLimit=()=>{if(LIC.state!=='full')return TRIAL_BRANCHES;const pl=licPlan();if(pl==='Standard')return 1;if(pl==='Pro')return 3;return (LIC.pay&&LIC.pay.br)?LIC.pay.br:Infinity};
 async function licVerify(k){
   k=String(k||'').trim().replace(/\s+/g,'');
   const m=/^(?:NVX1|SPOS1)-([\w-]+)\.([\w-]+)$/.exec(k);if(!m)throw new Error('format');
@@ -697,7 +736,7 @@ function licChip(){
   b.textContent=txt;b.classList.toggle('hide',!txt);b.classList.toggle('warn',warn);
 }
 function vendorHTML(){
-  const V=VENDOR,L=[];if(V.name)L.push(`<b>${esc(V.name)}</b>`);if(V.phone)L.push(`☎ ${esc(V.phone)}`);if(V.viber)L.push(`Viber: ${esc(V.viber)}`);if(V.email)L.push(`✉ ${esc(V.email)}`);if(V.web)L.push(esc(V.web));
+  const V=VENDOR,L=[];if(V.name)L.push(`<b>${esc(V.name)}</b>`);if(V.phone)L.push(`☎ <a href="tel:${esc(V.phone)}" style="color:inherit">${esc(V.phone)}</a>`);if(V.viber)L.push(`Viber: ${esc(V.viber)}`);if(V.email)L.push(`✉ ${esc(V.email)}`);if(V.web)L.push(esc(V.web));
   return L.length?L.join('<br>'):`<span class="mut">${t('Contact your software provider to get a license key.')}</span>`;
 }
 function licKeyModal(after){
@@ -729,16 +768,22 @@ function licSettings(){
   const badge=st==='full'?`<span class="badge ok">${t('Licensed')}</span>`:st==='trial'?`<span class="badge warn">${t('Free trial')}</span>`:`<span class="badge err">${t('Expired')}</span>`;
   const pct=st==='trial'?Math.min(100,Math.round((TRIAL_DAYS+(r.extDays||0)-LIC.daysLeft)/(TRIAL_DAYS+(r.extDays||0))*100)):100;
   const F=(l,v)=>`<div><span class="mut">${l}</span><br><b>${v}</b></div>`;
-  const info=st==='full'?`<div class="grid2 sm" style="row-gap:14px">${F(t('Licensed to (Customer)'),esc(p.buyer||'—'))}${F(t('Store name'),esc(p.cust||'—'))}${F(t('Store type'),esc(p.biz||'—'))}${F(t('Plan'),esc(p.plan||'Standard'))}${F(t('Valid until'),p.exp?esc(p.exp)+' ('+LIC.daysLeft+' '+t('days left')+')':t('Lifetime'))}${F(t('Branches allowed (Store limit)'),p.br?(p.br===1?t('Single store only'):p.br):t('Unlimited'))}</div>`
+  const info=st==='full'?`<div class="grid2 sm" style="row-gap:14px">${F(t('Licensed to (Customer)'),esc(p.buyer||'—'))}${F(t('Store name'),esc(p.cust||'—'))}${F(t('Store type'),esc(p.biz||'—'))}${F(t('Plan'),esc(licPlan()))}${F(t('Valid until'),p.exp?esc(p.exp)+' ('+LIC.daysLeft+' '+t('days left')+')':t('Lifetime'))}${F(t('Branches allowed (Store limit)'),licBranchLimit()===Infinity?t('Unlimited'):(licBranchLimit()===1?t('Single store only'):licBranchLimit()))}</div>`
     :`<div class="sm">${t('Trial started')}: <b>${fdt(r.start).split(' ')[0]}</b> · ${t('Ends')}: <b>${LIC.trialEnd?dkey(LIC.trialEnd):'—'}</b> · <b>${LIC.daysLeft}</b> ${t('days left')}</div><div class="bars mt"><div class="bt" style="width:${pct}%;background:${LIC.daysLeft<=7?'var(--err)':'var(--pri)'}"></div></div>`;
   main().innerHTML=H+`<div class="grid2"><div class="card"><div class="row mb"><h3 class="sp" style="margin:0">${t('License status')}</h3>${badge}</div>${info}
     ${LIC.tamper?`<p class="err sm mt">⚠ ${t('The computer clock was set back. Time already used still counts.')}</p>`:''}
     <button class="btn pri mt" id="lkGo">${ic('key')} ${t('Enter license key')}</button>
     <div class="mut sm mt">${t('Install ID')}: <b id="instId">${esc(r.inst)}</b> <button class="btn sm" id="instCp">${t('Copy')}</button></div>
     <div class="mut sm mt">${t('Version')}: <b>${APP_VERSION}</b>${/^https?:$/.test(location.protocol)?` · ${t('Works offline')}`:''}</div>${pwaPrompt?`<button class="btn mt" data-act="pwaInstall">⤓ ${t('Install app on this device')}</button>`:''}</div>
-    <div class="card"><h3>${t('How to activate for real use')}</h3>
-      <ol class="sm" style="padding-left:18px;line-height:1.8"><li>${t('Contact the seller and send your store name and the Install ID.')}</li><li>${t('After payment you receive a license key (a long text starting with NVX1-).')}</li><li>${t('Paste it in the box and press Activate. Your data stays exactly as it is.')}</li></ol>
+    <div class="card" style="grid-column:1/-1"><h3>${t('How to activate Navotex POS & Inventory Software')}</h3>
+      <ol class="sm" style="padding-left:18px;line-height:1.8"><li>${t('Contact Navotex POS at the phone number below and send: your name, store name, store type, Plan (Standard, Pro or Premium), the number of branches (if you have any), and the Install ID shown on this screen.')}</li><li>${t('After payment you receive a license key (a long text starting with NVX1-).')}</li><li>${t('Paste the license key into the key box and press Activate. Your data stays exactly as it is.')}</li></ol>
       <div class="card" style="padding:12px;background:var(--bg)">${vendorHTML()}</div>
+      <h4 class="mt">${t('Quick guide')}</h4>
+      <ol class="sm" style="padding-left:18px;line-height:1.8"><li>${t('Keep your Admin account passwords safe.')}</li><li>${t('Set a separate Backup & Restore password. It is required for every backup and every restore. It stops other people from taking a backup without permission, so your data cannot be copied or leaked.')}</li><li>${t('During the trial period, retail and wholesale are both fully available. After you buy, on the Standard plan new sales can only be retail. Wholesale records you already created are kept.')}</li><li>${t('Plans')}:</li></ol>
+      <div class="tw"><table><thead><tr><th>Plan</th><th>${t('Stores')}</th><th>${t('Wholesale')}</th><th>${t('Receipts')}</th></tr></thead><tbody>
+        <tr><td class="b">Standard</td><td>${t('1 store')}</td><td>${t('Not available (new sales are retail only; old records kept)')}</td><td>${t('80mm and A5 only, no A4')}</td></tr>
+        <tr><td class="b">Pro</td><td>${t('3 stores in total')}</td><td>${t('Available')}</td><td>${t('All sizes')}</td></tr>
+        <tr><td class="b">Premium</td><td>${t('Unlimited')}</td><td>${t('Available')}</td><td>${t('All sizes')}</td></tr></tbody></table></div>
       <p class="mut sm mt">${t('Keep a backup before and after activation. Keys are checked on this device without internet.')}</p></div></div>`;
   $('#lkGo').onclick=()=>licKeyModal(()=>licSettings());
   $('#instCp').onclick=()=>{try{navigator.clipboard.writeText(r.inst);toast(t('Copied'),'ok')}catch(e){}};
@@ -779,6 +824,7 @@ sales:'<path d="M4 2v20l3-2 3 2 3-2 3 2 3-2V2z"/><path d="M8 7h8M8 11h8M8 15h5"/
 inventory:'<path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/>',
 purchase:'<rect x="1" y="6" width="14" height="10"/><path d="M15 9h4l4 4v3h-8"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/>',
 cash:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 10v4M18 10v4"/>',
+insights:'<path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2V17h6v-.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2z"/>',
 reports:'<path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/>',
 barcode:'<path d="M3 5v14M6 5v14M10 5v14M13 5v14M17 5v14M21 5v14"/>',
 settings:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
@@ -830,9 +876,20 @@ ACT.expGSheet=async()=>{const rows=[PROD_COLS];DB.products.forEach(p=>rows.push(
 
 
 function toast(msg,type=''){const d=document.createElement('div');d.className='toast '+type;d.textContent=msg;$('#toasts').appendChild(d);setTimeout(()=>d.remove(),type==='err'?4500:2600)}
+/* touch devices: the on-screen keyboard opens only when the user taps a text box (no programmatic auto-focus) */
+const TOUCH=(()=>{try{return matchMedia('(pointer:coarse)').matches}catch(e){return false}})();
+if(TOUCH){const f0=HTMLElement.prototype.focus;HTMLElement.prototype.focus=function(o){
+  try{if(this.matches&&this.matches('input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]):not([type=file]):not([type=color]):not([type=range]),textarea'))return}catch(e){}
+  return f0.call(this,o)};const s0=HTMLInputElement.prototype.select;HTMLInputElement.prototype.select=function(){if(document.activeElement!==this)return;return s0.call(this)}}
+/* numeric keypad for every number box */
+(function(){const z=i=>{if((i.type==='number'||i.hasAttribute('data-money'))&&i.value==='0'&&!i.hasAttribute('data-keep0')){i.value='';if(!i.placeholder)i.placeholder='0'}};
+  const fix=r=>{(r.querySelectorAll?r.querySelectorAll('input[type=number],input[data-money]'):[]).forEach(z);if(r.matches&&r.matches('input[type=number],input[data-money]'))z(r);(r.querySelectorAll?r.querySelectorAll('input[type=number]:not([inputmode])'):[]).forEach(i=>i.setAttribute('inputmode',i.step==='1'?'numeric':'decimal'));if(r.matches&&r.matches('input[type=number]:not([inputmode])'))r.setAttribute('inputmode',r.step==='1'?'numeric':'decimal')};
+  const go=()=>{fix(document.body);new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)fix(n)}))).observe(document.body,{childList:true,subtree:true})};
+  if(document.body)go();else addEventListener('DOMContentLoaded',go)})();
 function modal(title,body,footer='',cls=''){
   const bg=document.createElement('div');bg.className='mbg';
   bg.innerHTML=`<div class="modal ${cls}" role="dialog"><div class="mh"><h3>${title}</h3><button class="btn ghost sm" data-close aria-label="close">${ic('x')}</button></div><div class="mb2">${body}</div>${footer?`<div class="mf">${footer}</div>`:''}</div>`;
+  bg.querySelectorAll('[autofocus]').forEach(e=>e.removeAttribute('autofocus'));
   document.body.appendChild(bg);
   const f=bg.querySelector('input:not([type=checkbox]):not([type=radio]):not([type=file]),select,textarea');if(f)setTimeout(()=>{try{f.focus();f.select&&f.select()}catch(e){}},40);
   return bg;
@@ -863,9 +920,14 @@ document.addEventListener('click',e=>{
 document.addEventListener('input',e=>{const el=e.target;if(!el||!el.hasAttribute||!el.hasAttribute('data-money')||e.isComposing)return;
   let v=el.value.replace(/[၀-၉]/g,c=>'၀၁၂၃၄၅၆၇၈၉'.indexOf(c)).replace(/[٠-٩]/g,c=>'٠١٢٣٤٥٦٧٨٩'.indexOf(c)).replace(/,/g,'').replace(/[^\d.]/g,'');
   const d=v.indexOf('.');if(d>=0)v=v.slice(0,d+1)+v.slice(d+1).replace(/\./g,'');if(v!==el.value)el.value=v},true);
+document.addEventListener('input',e=>{const el=e.target;if(!el||el.tagName!=='INPUT'||e.isComposing)return;if((el.type==='number'||el.hasAttribute('data-money'))&&/^0\d/.test(el.value)){const v=el.value.replace(/^0+(?=\d)/,'');el.value=v}},true);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){const m=$$('.mbg').pop();if(m)m.remove()}});
 
 /* product picker (autocomplete) */
+function variantPicker(p,cb,o={}){
+  const m=modal(t('Choose variant')+' — '+esc(p.name),`<div class="tw"><table><tbody>${p.variants.map(v=>{const q=vStock(p,v.id);return `<tr class="vp" data-v="${v.id}" style="cursor:pointer"><td class="b">${esc(v.name)}<div class="mut sm">${esc(v.sku||'')}${v.barcode?' · '+esc(v.barcode):''}</div></td><td class="r ${q<=0&&p.trackStock!==false?'err':''}">${p.trackStock===false?'':nf(q)+' '+esc(p.unit||'')}</td><td class="r"><button class="btn sm pri" data-v="${v.id}">${t('Select')}</button></td></tr>`}).join('')}</tbody></table></div>`,`<button class="btn" data-close>${t('Cancel')}</button>`,'sm');
+  m.addEventListener('click',e=>{const r=e.target.closest('[data-v]');if(!r)return;closeM(m);cb(vOf(p,r.dataset.v))});
+}
 function picker(input,onPick,filter){
   input.parentElement.classList.add('pk');
   const res=document.createElement('div');res.className='pk-r hide';input.parentElement.appendChild(res);
@@ -873,14 +935,14 @@ function picker(input,onPick,filter){
   const mark=()=>$$('div',res).forEach((d,i)=>d.classList.toggle('hl',i===hl));
   function show(){
     const q=input.value.trim().toLowerCase();if(!q){res.classList.add('hide');return}
-    list=DB.products.filter(p=>p.active!==false&&(!filter||filter(p))&&(p.name.toLowerCase().includes(q)||(p.sku||'').toLowerCase().includes(q)||(p.barcode||'').includes(q))).slice(0,8);hl=0;
+    list=DB.products.filter(p=>p.active!==false&&(!filter||filter(p))&&(p.name.toLowerCase().includes(q)||(p.sku||'').toLowerCase().includes(q)||(p.barcode||'').includes(q)||(varsOn()&&(p.variants||[]).some(v=>(v.name||'').toLowerCase().includes(q)||(v.sku||'').toLowerCase().includes(q)||(v.barcode||'').includes(q))))).slice(0,8);hl=0;
     res.innerHTML=list.map((p,i)=>`<div data-i="${i}" class="${i===0?'hl':''}"><span>${esc(p.name)} <span class="mut sm">${esc(p.sku||'')}</span></span><span class="mut sm">${money(p.price)}</span></div>`).join('')||`<div class="mut">${t('No results')}</div>`;
     res.classList.remove('hide');
   }
-  function pick(p){input.value='';res.classList.add('hide');onPick(p);input.focus()}
+  function pick(p,vid){input.value='';res.classList.add('hide');if(hasVars(p)&&!vid)variantPicker(p,v=>onPick(p,v.id));else onPick(p,vid);input.focus()}
   input.addEventListener('input',show);
   input.addEventListener('keydown',e=>{
-    if(e.key==='Enter'){e.preventDefault();const q=input.value.trim();const ex=q&&DB.products.find(p=>p.barcode===q||p.sku===q);const p=ex||list[hl];if(p)pick(p)}
+    if(e.key==='Enter'){e.preventDefault();const q=input.value.trim();const fv=q&&findVarCode(q);if(fv){pick(fv.p,fv.vid);return}const ex=q&&DB.products.find(p=>p.barcode===q||p.sku===q);const p=ex||list[hl];if(p)pick(p)}
     else if(e.key==='ArrowDown'){e.preventDefault();hl=Math.min(hl+1,list.length-1);mark()}
     else if(e.key==='ArrowUp'){e.preventDefault();hl=Math.max(hl-1,0);mark()}
     else if(e.key==='Escape'){res.classList.add('hide')}
@@ -975,7 +1037,7 @@ function barcodeSVG(code,type='auto',o={}){
 /* ---------- data layer ---------- */
 const DEFAULT_SETTINGS=()=>({storeName:'My Store',logo:'',address:'',phone:'',currency:'MMK',usdRate:4500,taxMode:'none',taxRate:5,
   receiptHeader:'',receiptFooter:'Thank you! Please come again.',paper:'80',autoPrint:false,allowNegative:false,closeTime:'',closeBlock:false,
-  payMethods:['Cash','KBZPay','WavePay','AYA Pay','Card','Banking','Banking Special'],bankAdded:true,useWholesale:false,useCredit:false,creditDaysWs:30,creditDaysRt:0,allowRetailCredit:true,blockOverdue:false,channels:['In-store','Online'],useChannels:true,useCOD:true,posImg:true,rc:{fs:'md',logo:true,addr:true,phone:true,cashier:true,channel:true,units:true,note:''},backupPass:'',cloud:{url:'',key:'',auto:false,last:''}});
+  payMethods:['Cash','KBZPay','WavePay','AYA Pay','Card','Banking','Banking Special'],bankAdded:true,useWholesale:false,useCredit:false,creditDaysWs:30,creditDaysRt:0,allowRetailCredit:true,blockOverdue:false,channels:['In-store','Online'],useChannels:true,useCOD:true,posImg:true,rc:{fs:'md',logo:true,addr:true,phone:true,cashier:true,channel:true,units:true,dcode:true,note:''},backupPass:'',cloud:{url:'',key:'',auto:false,last:''}});
 function seed(){
   const bid=uid();
   const d={meta:{version:1,deviceId:uid(),updatedAt:now()},settings:DEFAULT_SETTINGS(),counters:{},
@@ -1022,12 +1084,12 @@ const Cloud={timer:null,
 };
 
 /* ---------- domain helpers ---------- */
-const ROLE_ROUTES={admin:['dashboard','pos','sales','customers','inventory','purchase','cash','reports','barcode','settings'],
-  manager:['dashboard','pos','sales','customers','inventory','purchase','cash','reports','barcode','settings'],cashier:['pos','sales','customers','cash'],stock:['inventory','purchase','barcode']};
+const ROLE_ROUTES={admin:['dashboard','pos','sales','customers','inventory','purchase','cash','reports','insights','barcode','settings'],
+  manager:['dashboard','pos','sales','customers','inventory','purchase','cash','reports','insights','barcode','settings'],cashier:['pos','sales','customers','cash'],stock:['inventory','purchase','barcode']};
 const MODULES=[['dashboard','Dashboard'],['sales','Sales'],['customers','Customers'],['inventory','Inventory'],['purchase','Purchase'],['cash','Cash Closing'],['reports','Reports'],['barcode','Barcode']];
 const MOD_PRESETS={pos:['sales','inventory'],retail:['dashboard','sales','inventory','purchase','cash','reports','barcode'],full:MODULES.map(m=>m[0])};
 const modOn=id=>!(typeof DB!=='undefined'&&DB&&DB.settings&&DB.settings.modules&&DB.settings.modules[id]===false);
-const can=r=>S.user&&ROLE_ROUTES[S.user.role].includes(r)&&modOn(r)&&!(r==='cash'&&shiftMode()==='off');
+const can=r=>S.user&&ROLE_ROUTES[S.user.role].includes(r)&&modOn(r==='insights'?'reports':r)&&!(r==='cash'&&shiftMode()==='off');
 const firstRoute=()=>ROLE_ROUTES[S.user.role].find(r=>can(r))||'pos';
 const isMgr=()=>S.user&&(S.user.role==='admin'||S.user.role==='manager');
 const isAdmin=()=>S.user&&S.user.role==='admin';
@@ -1043,12 +1105,21 @@ const stockOf=(p,b)=>+((p.stock||{})[b||S.branchId])||0;
 const r3=x=>Math.round(x*1000)/1000;
 let lastAlloc=[];
 const byExp=(a,c)=>(a.exp||'9999-12-31').localeCompare(c.exp||'9999-12-31')||(a.date||'').localeCompare(c.date||'');
-const batchesOf=(pid,b)=>(DB.batches||[]).filter(x=>x.pid===pid&&x.branchId===b&&x.qty>0).sort(byExp);
-function newBatch(pid,b,q,o){DB.batches=DB.batches||[];const x={id:uid(),pid,branchId:b,no:(o&&o.no)||'',exp:(o&&o.exp)||'',qty:r3(q),date:now(),ref:(o&&o.ref)||''};DB.batches.push(x);return x}
+const varsOn=()=>DB.settings.useVariants===true;
+const hasVars=p=>!!p&&varsOn()&&Array.isArray(p.variants)&&p.variants.length>0;
+const vOf=(p,vid)=>vid&&p&&(p.variants||[]).find(v=>v.id===vid)||null;
+const vStock=(p,vid,b)=>+(((vOf(p,vid)||{}).stock||{})[b||S.branchId])||0;
+const availOf=(p,vid,b)=>vid?vStock(p,vid,b):stockOf(p,b);
+const vName=(p,vid)=>{const v=vOf(p,vid);return v?p.name+' · '+v.name:p.name};
+const unassigned=(p,b)=>r3(stockOf(p,b)-sum(p.variants||[],v=>+((v.stock||{})[b||S.branchId])||0));
+function findVarCode(c){if(!c||!varsOn())return null;for(const p of DB.products){if(p.active===false)continue;const v=(p.variants||[]).find(x=>(x.barcode&&x.barcode===c)||(x.sku&&x.sku===c));if(v)return {p,vid:v.id}}return null}
+const batchesOf=(pid,b,vid)=>(DB.batches||[]).filter(x=>x.pid===pid&&x.branchId===b&&x.qty>0&&(vid==null||(x.vid||'')===vid)).sort(byExp);
+function newBatch(pid,b,q,o){DB.batches=DB.batches||[];const x={id:uid(),pid,branchId:b,no:(o&&o.no)||'',exp:(o&&o.exp)||'',qty:r3(q),date:now(),ref:(o&&o.ref)||''};if(o&&o.vid)x.vid=o.vid;DB.batches.push(x);return x}
 function addStock(p,b,q,o){
-  p.stock=p.stock||{};p.stock[b]=r3((+p.stock[b]||0)+q);p.updatedAt=now();o=o||{};lastAlloc=[];
+  o=o||{};p.stock=p.stock||{};p.stock[b]=r3((+p.stock[b]||0)+(o.pd!=null?o.pd:q));p.updatedAt=now();lastAlloc=[];
+  const vv=o.vid&&vOf(p,o.vid);if(vv){vv.stock=vv.stock||{};vv.stock[b]=r3((+vv.stock[b]||0)+q)}
   if(q<0){let need=-q;
-    const L=o.bid?[...(DB.batches||[]).filter(x=>x.id===o.bid&&x.qty>0),...batchesOf(p.id,b).filter(x=>x.id!==o.bid)]:batchesOf(p.id,b);
+    const L=o.bid?[...(DB.batches||[]).filter(x=>x.id===o.bid&&x.qty>0),...batchesOf(p.id,b,o.vid||undefined).filter(x=>x.id!==o.bid)]:batchesOf(p.id,b,o.vid||undefined);
     for(const x of L){if(need<=0)break;const tk=Math.min(x.qty,need);x.qty=r3(x.qty-tk);need=r3(need-tk);lastAlloc.push({id:x.id,q:tk})}
   }else if(q>0){
     if(o.bt&&o.bt.length){let left=q;for(const a of o.bt){const x=(DB.batches||[]).find(y=>y.id===a.id),put=Math.min(a.q,left);if(put<=0)continue;if(o.copy){if(x)newBatch(p.id,b,put,x)}else if(x)x.qty=r3(x.qty+put);left=r3(left-put)}}
@@ -1070,7 +1141,7 @@ function myBranches(){const u=S.user;return DB.branches.filter(b=>b.active!==fal
 function nextNo(prefix,key){DB.counters[key]=(DB.counters[key]||0)+1;return prefix+String(DB.counters[key]).padStart(5,'0')}
 const PAYNAME=m=>m==='Cash'?t('Cash'):m;
 const qtyU=i=>nf(i.qty)+((i.factor||1)>1?' '+esc(i.unit||''):'');
-const wholesaleOn=()=>!!DB.settings.useWholesale,creditOn=()=>!!DB.settings.useCredit&&modOn('customers'),custOn=()=>wholesaleOn()||creditOn();
+const wholesaleOn=()=>!!DB.settings.useWholesale&&planWholesale(),creditOn=()=>!!DB.settings.useCredit&&modOn('customers'),custOn=()=>wholesaleOn()||creditOn();
 // ---- credit terms: days to pay. wholesale/retail defaults in Settings, optional override per customer (0 = no due date)
 const crDefDays=mode=>{const v=mode==='wholesale'?DB.settings.creditDaysWs:DB.settings.creditDaysRt;return v==null?(mode==='wholesale'?30:0):Math.max(0,Math.floor(num(v)))};
 const crDaysFor=(cu,mode)=>cu&&cu.creditDays!=null&&cu.creditDays!==''?Math.max(0,Math.floor(num(cu.creditDays))):crDefDays(mode);
@@ -1093,6 +1164,8 @@ const fxRound=n=>Math.round((+n||0)*100)/100;
 const DEF_CHANNELS=['In-store','Online'];
 const chanOn=()=>DB.settings.useChannels!==false;
 const codOn=()=>DB.settings.useCOD!==false;
+const DSTAT=[['pending','Pending'],['shipped','Shipped'],['delivered','Delivered']];
+const dsLabel=k=>t((DSTAT.find(x=>x[0]===k)||DSTAT[0])[1]);
 const shiftMode=()=>!modOn('cash')?'off':(DB.settings.shiftMode||'required');
 const chans=()=>{const c=DB.settings.channels,l=c&&c.length?c:DEF_CHANNELS;return chanOn()?l:[l[0]]};
 const repVis0=k=>(k==='channel'||k==='channelpay')?chanOn():k==='cod'?(codOn()||DB.sales.some(x=>x.status==='cod')):(k==='pricetype'||k==='wsales'||k==='citysales')?wholesaleOn():(k==='custsales'||k==='custbal'||k==='overdue')?(custOn()||DB.customers.length>0):true;
@@ -1135,7 +1208,7 @@ const hbars=(rows,fmt=money)=>{const m=Math.max(1,...rows.map(r=>r.v));return `<
    SHELL / LOGIN / ROUTER
    ===================================================================== */
 const VIEWS={};
-const NAV=[{id:'dashboard',t:'Dashboard'},{id:'pos',t:'POS'},{id:'sales',t:'Sales'},{id:'customers',t:'Customers'},{id:'inventory',t:'Inventory'},{id:'purchase',t:'Purchase'},{id:'cash',t:'Cash Closing'},{id:'reports',t:'Reports'},{id:'barcode',t:'Barcode'},{id:'settings',t:'Settings'}];
+const NAV=[{id:'dashboard',t:'Dashboard'},{id:'pos',t:'POS'},{id:'sales',t:'Sales'},{id:'customers',t:'Customers'},{id:'inventory',t:'Inventory'},{id:'purchase',t:'Purchase'},{id:'cash',t:'Cash Closing'},{id:'reports',t:'Reports'},{id:'insights',t:'Insights'},{id:'barcode',t:'Barcode'},{id:'settings',t:'Settings'}];
 const TITLES=Object.fromEntries(NAV.map(n=>[n.id,n.t]));
 const main=()=>$('#main');
 function renderApp(){if(S.user){buildShell();licGate()}else{S.locked=false;document.getElementById('lock')?.remove();renderLogin()}lockApply()}
@@ -1147,13 +1220,14 @@ function renderLogin(){
     <div class="lwrap"><div class="ltag">POS &amp; INVENTORY SOFTWARE</div><form id="lf" class="lcard" autocomplete="on">
       <div class="llogo">${st.logo?`<img src="${st.logo}" alt="">`:`<img class="dfl" src="${NVX_LOGO}" alt="">`}</div>
       <h1>${esc(st.storeName)}</h1>
-      ${fld(t('Username'),`<input id="lu" autocomplete="username" data-ascii lang="en" autocapitalize="off" autocorrect="off" spellcheck="false" autofocus required>`)}
+      ${fld(t('Username'),`<input id="lu" autocomplete="username" data-ascii lang="en" autocapitalize="off" autocorrect="off" spellcheck="false" ${TOUCH?'':'autofocus'} required>`)}
       ${fld(t('Password'),`<input id="lp" type="password" autocomplete="current-password" data-ascii lang="en" autocapitalize="off" autocorrect="off" spellcheck="false" required>`)}
       <div id="lerr" class="err sm mb hide"></div>
       <button class="btn pri lg" style="width:100%">${t('Sign In')}</button>
       <div class="nvx-by"><img class="nvx-mk" src="${NVX_LOGO}" alt=""><span>Navo<b>tex</b></span></div>
     </form></div>
     <button type="button" class="shut" data-act="shutdown">${ic('power')}<span>${t('Shut down')}</span></button></div>`;
+  if(TOUCH)setTimeout(()=>{const a=document.activeElement;if(a&&a.id==='lu')a.blur()},0);
   $('#lf').onsubmit=async e=>{e.preventDefault();
     const un=$('#lu').value.trim().toLowerCase(),pw=$('#lp').value;
     const u=DB.users.find(x=>x.username.toLowerCase()===un&&x.active!==false);
@@ -1228,7 +1302,8 @@ function notifs(){
     DB.products.forEach(p=>{if(lowStock(p,br)&&num(p.minStock)>0)o.low.push(p)});
   }
   if(creditOn()&&isMgr()){DB.sales.forEach(x=>{if(x.status==='void'||!(num(x.due)>0)||!x.dueDate)return;const d=daysTo(x.dueDate);if(d<=dueDays())o.due.push({s:x,d})});o.due.sort((a,b)=>a.d-b.d)}
-  o.n=o.exp.length+o.due.length+o.low.length;return o}
+  o.cost=isMgr()?DB.products.filter(p=>p.active!==false&&p.costUp&&!p.costUp.ack&&daysTo(dkey(p.costUp.date))>=-30):[];
+  o.n=o.exp.length+o.due.length+o.low.length+o.cost.length;return o}
 function bellUpdate(){const b=$('#bellN');if(!b)return;const n=notifs().n;b.textContent=n>99?'99+':n;b.classList.toggle('hide',!n);const bb=$('#bellBtn');if(bb)bb.classList.toggle('hide',false)}
 ACT.notif=()=>{
   const o=notifs();
@@ -1238,7 +1313,10 @@ ACT.notif=()=>{
   const html=sec('📅 '+t('Expiry'),o.exp.length,o.exp.map(e=>`<div class="ntf-r" data-act="ntfGo" data-to="inventory"><div class="sp"><b>${esc(e.p.name)}</b><div class="sub">${e.x.no?esc(e.x.no)+' · ':''}${fdk(e.x.exp)} · ${t('Qty')} ${nf(e.x.qty)} ${esc(e.p.unit||'')}</div></div><div>${etxt(e.d)}</div></div>`).join(''),t('Nothing is expiring soon'))
    +(creditOn()&&isMgr()?sec('💳 '+t('Credit due'),o.due.length,o.due.map(e=>{const c=cust(e.s.customerId)||{};return `<div class="ntf-r" data-act="ntfGo" data-to="customers"><div class="sp"><b>${esc(c.name||'—')}</b><div class="sub">${esc(e.s.no)} · ${t('Due')} ${fdk(e.s.dueDate)} · ${money(e.s.due)}</div></div><div>${dtxt(e.d)}</div></div>`}).join(''),t('No credit is due soon')):'')
    +sec('📦 '+t('Low stock'),o.low.length,o.low.slice(0,40).map(p=>`<div class="ntf-r" data-act="ntfGo" data-to="inventory"><div class="sp"><b>${esc(p.name)}</b><div class="sub">${t('Min')} ${nf(p.minStock)}</div></div><div class="err b">${nf(stockOf(p))} ${esc(p.unit||'')}</div></div>`).join('')+(o.low.length>40?`<div class="mut sm">+${o.low.length-40}</div>`:''),t('All products are above their minimum'));
-  modal('🔔 '+t('Notifications'),html||'',`<button class="btn pri" data-close>${t('Close')}</button>`,'md')};
+  const costH=isMgr()?sec('📈 '+t('Buying price increased'),o.cost.length,o.cost.map(p=>{const mg=num(p.price)?(num(p.price)-p.costUp.to)/num(p.price)*100:0;return `<div class="ntf-r"><div class="sp"><b>${esc(p.name)}</b><div class="sub">${money(p.costUp.from)} → ${money(p.costUp.to)} · ${t('Sell price')} ${money(p.price)} · ${t('Margin')} ${mg.toFixed(1)}%</div></div><div><button class="btn sm" data-act="ntfCost" data-id="${p.id}">${t('Edit price')}</button> <button class="btn sm ghost" data-act="ntfAck" data-id="${p.id}">OK</button></div></div>`}).join(''),t('No buying price changes')):'';
+  modal('🔔 '+t('Notifications'),(html||'')+costH,`<button class="btn pri" data-close>${t('Close')}</button>`,'md')};
+ACT.ntfCost=el=>{$$('.mbg').forEach(x=>x.remove());const p=prod(el.dataset.id);if(p)productModal(p)};
+ACT.ntfAck=el=>{const p=prod(el.dataset.id);if(p&&p.costUp){p.costUp.ack=1;save();bellUpdate();el.closest('.ntf-r').remove()}};
 ACT.ntfGo=el=>{const to=el.dataset.to;$$('.mbg').forEach(x=>x.remove());location.hash='#'+to};
 setInterval(()=>{try{bellUpdate()}catch(e){}},15000);
 function updateHeader(){
@@ -1330,45 +1408,63 @@ VIEWS.pos=function(){
   });
   posCats();posGrid();renderCart();
 };
+const posFavs=()=>Array.isArray(DB.settings.favs)?DB.settings.favs:(DB.settings.favs=[]);
+const posOutOf=p=>p.trackStock!==false&&stockOf(p)<=0&&!DB.settings.allowNegative;
 function posCats(){
-  const used=new Set(DB.products.filter(p=>p.active!==false).map(p=>p.categoryId));
-  $('#posCats').innerHTML=`<span class="chip ${!S.posCat?'on':''}" data-act="pcat" data-c="">${t('All')}</span>`+DB.categories.filter(c=>used.has(c.id)).map(c=>`<span class="chip ${S.posCat===c.id?'on':''}" data-act="pcat" data-c="${c.id}">${esc(c.name)}</span>`).join('');
+  const act=DB.products.filter(p=>p.active!==false),used=new Set(act.map(p=>p.categoryId)),outN=act.filter(posOutOf).length,favN=posFavs().filter(id=>act.some(p=>p.id===id)).length;
+  if(S.posCat==='__out'&&!outN)S.posCat='';
+  $('#posCats').innerHTML=`<span class="chip ${!S.posCat?'on':''}" data-act="pcat" data-c="">${t('All')}</span><span class="chip ${S.posCat==='__fav'?'on':''}" data-act="pcat" data-c="__fav">⭐ ${t('Favorites')}${favN?' ('+favN+')':''}</span>`+DB.categories.filter(c=>used.has(c.id)).map(c=>`<span class="chip ${S.posCat===c.id?'on':''}" data-act="pcat" data-c="${c.id}">${esc(c.name)}</span>`).join('')+(outN?`<span class="chip ${S.posCat==='__out'?'on':''}" data-act="pcat" data-c="__out" style="border-color:var(--err);color:${S.posCat==='__out'?'#fff':'var(--err)'};${S.posCat==='__out'?'background:var(--err)':''}">${t('Out of stock')} (${outN})</span>`:'')+(S.posCat==='__fav'&&favN?`<span class="chip ${S.favEdit?'on':''}" data-act="pfedit" style="margin-left:auto">${S.favEdit?'✓ '+t('Done'):'↕ '+t('Arrange')}</span>`:'');
 }
-ACT.pcat=el=>{S.posCat=el.dataset.c;posCats();posGrid()};
+ACT.pcat=el=>{S.posCat=el.dataset.c;if(S.posCat!=='__fav')S.favEdit=false;posCats();posGrid()};
+ACT.pfedit=()=>{S.favEdit=!S.favEdit;posCats();posGrid()};
+ACT.pfav=(el,e)=>{if(e&&e.stopPropagation)e.stopPropagation();const id=el.dataset.id,F=posFavs(),i=F.indexOf(id);if(i>=0)F.splice(i,1);else F.push(id);save();posCats();posGrid()};
+ACT.pfmv=(el,e)=>{if(e&&e.stopPropagation)e.stopPropagation();const F=posFavs(),i=F.indexOf(el.dataset.id),d=+el.dataset.d,j=i+d;if(i<0||j<0||j>=F.length)return;[F[i],F[j]]=[F[j],F[i]];save();posGrid()};
 function posFiltered(){
-  const q=($('#posQ')||{value:''}).value.trim().toLowerCase();
-  return DB.products.filter(p=>p.active!==false&&(!S.posCat||p.categoryId===S.posCat)&&(!q||p.name.toLowerCase().includes(q)||(p.sku||'').toLowerCase().includes(q)||(p.barcode||'').includes(q)));
+  const q=($('#posQ')||{value:''}).value.trim().toLowerCase(),c=S.posCat;
+  const mq=p=>!q||p.name.toLowerCase().includes(q)||(p.sku||'').toLowerCase().includes(q)||(p.barcode||'').includes(q)||(varsOn()&&(p.variants||[]).some(v=>(v.name||'').toLowerCase().includes(q)||(v.sku||'').toLowerCase().includes(q)||(v.barcode||'').includes(q)));
+  const act=DB.products.filter(p=>p.active!==false);
+  if(c==='__fav')return posFavs().map(id=>act.find(p=>p.id===id)).filter(p=>p&&mq(p));
+  if(c==='__out')return act.filter(p=>posOutOf(p)&&mq(p));
+  return act.filter(p=>(!c||p.categoryId===c)&&mq(p)&&(q||!posOutOf(p)));
 }
 function posGrid(){
-  const L=posFiltered().slice(0,150),neg=DB.settings.allowNegative;
-  $('#posGrid').innerHTML=L.map(p=>{const s=stockOf(p),tr=p.trackStock!==false,out=tr&&s<=0&&!neg;
-    return `<button class="pc ${out?'out':''}" data-act="padd" data-id="${p.id}">${DB.settings.posImg!==false&&p.img?`<div class="pi"><img src="${p.img}" alt="" loading="lazy"></div>`:''}<div class="nm">${esc(p.name)}</div><div class="pr">${money(priceOf(p,getCart().mode))}</div><div class="st">${tr?(s<=0?`<span class="err">${t('Out of stock')}</span>`:nf(s)+' '+esc(p.unit||'')):'&nbsp;'}</div></button>`}).join('')||`<div class="empty" style="grid-column:1/-1">${t('No products found')}</div>`;
+  const L=posFiltered().slice(0,150),neg=DB.settings.allowNegative,F=posFavs(),ed=S.favEdit&&S.posCat==='__fav';
+  $('#posGrid').innerHTML=L.map((p,ix)=>{const s=stockOf(p),tr=p.trackStock!==false,out=tr&&s<=0&&!neg;
+    return `<button class="pc ${out?'out':''} ${ed?'arr':''}" ${ed?`draggable="true" data-dr="${p.id}"`:`data-act="padd" data-id="${p.id}"`}><span class="fv ${F.includes(p.id)?'on':''}" data-act="pfav" data-id="${p.id}" title="${t('Favorite')}">${F.includes(p.id)?'★':'☆'}</span>${DB.settings.posImg!==false&&p.img?`<div class="pi"><img src="${p.img}" alt="" loading="lazy"></div>`:''}<div class="nm">${esc(p.name)}</div><div class="pr">${money(priceOf(p,getCart().mode))}</div><div class="st">${tr?(s<=0?`<span class="err">${t('Out of stock')}</span>`:nf(s)+' '+esc(p.unit||'')):'&nbsp;'}</div>${ed?`<div class="ar"><span data-act="pfmv" data-id="${p.id}" data-d="-1">◀</span><span data-act="pfmv" data-id="${p.id}" data-d="1">▶</span></div>`:''}</button>`}).join('')||`<div class="empty" style="grid-column:1/-1">${S.posCat==='__fav'?t('Tap ☆ on a product to add it to Favorites'):S.posCat==='__out'?t('Nothing is out of stock'):t('No products found')}</div>`;
 }
+(function(){let dragId=null;
+  document.addEventListener('dragstart',e=>{const c=e.target.closest&&e.target.closest('[data-dr]');if(!c)return;dragId=c.dataset.dr;c.classList.add('drag');try{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',dragId)}catch(x){}});
+  document.addEventListener('dragend',e=>{dragId=null;$$('.pc.drag').forEach(x=>x.classList.remove('drag'))});
+  document.addEventListener('dragover',e=>{if(dragId&&e.target.closest&&e.target.closest('[data-dr]'))e.preventDefault()});
+  document.addEventListener('drop',e=>{const c=e.target.closest&&e.target.closest('[data-dr]');if(!c||!dragId)return;e.preventDefault();const F=posFavs(),a=F.indexOf(dragId),b=F.indexOf(c.dataset.dr);if(a<0||b<0||a===b)return;const [x]=F.splice(a,1);F.splice(b,0,x);dragId=null;save();posGrid()})})();
 ACT.padd=el=>addToCart(prod(el.dataset.id));
 function scanEnter(v){
   if(!v)return;
+  const fv=findVarCode(v);if(fv){addToCart(fv.p,1,undefined,fv.vid);$('#posQ').value='';posGrid();beep();return}
   const ex=DB.products.find(p=>p.active!==false&&(p.barcode===v||p.sku===v)),au=ex?null:DB.products.find(p=>p.active!==false&&uomsOf(p).some(u=>u.barcode&&u.barcode===v));
   if(au){addToCart(au,1,uomsOf(au).find(u=>u.barcode===v).name);$('#posQ').value='';posGrid();beep();return}
   const f=ex?[ex]:posFiltered();
   if(f.length===1){addToCart(f[0]);$('#posQ').value='';posGrid();beep()}
   else if(!f.length){toast(t('Product not found: {v}',{v}),'err')}
 }
-const cartBase=(cart,pid,skip)=>sum(cart.lines.filter((l,i)=>l.pid===pid&&i!==skip),l=>l.qty*(l.factor||1));
-function addToCart(p,qty=1,uom){
-  if(!p)return;const cart=getCart(),un=uom&&uomOf(p,uom)?uom:p.unit,fc=facOf(p,un);let l=cart.lines.find(x=>x.pid===p.id&&(x.factor||1)===fc);
-  const want=(l?l.qty:0)+qty;
-  if(p.trackStock!==false&&!DB.settings.allowNegative&&cartBase(cart,p.id)+qty*fc>stockOf(p)){return toast(t('Not enough stock: {n} available',{n:nf(stockOf(p))}),'err')}
-  if(l)l.qty=want;else cart.lines.push({pid:p.id,name:p.name,unit:un,factor:fc,price:unitPrice(p,cart.mode,un),cost:Math.round(num(p.cost)*fc*100)/100,qty});
+const cartBase=(cart,pid,skip,vid)=>sum(cart.lines.filter((l,i)=>l.pid===pid&&i!==skip&&(l.vid||'')===(vid||'')),l=>l.qty*(l.factor||1));
+function addToCart(p,qty=1,uom,vid){
+  if(!p)return;if(hasVars(p)&&!vid)return variantPicker(p,v=>addToCart(p,qty,uom,v.id));
+  if(!hasVars(p))vid=undefined;
+  const cart=getCart(),un=uom&&uomOf(p,uom)?uom:p.unit,fc=facOf(p,un);let l=cart.lines.find(x=>x.pid===p.id&&(x.factor||1)===fc&&(x.vid||'')===(vid||''));
+  const want=(l?l.qty:0)+qty,av=availOf(p,vid);
+  if(p.trackStock!==false&&!DB.settings.allowNegative&&cartBase(cart,p.id,undefined,vid)+qty*fc>av){return toast(t('Not enough stock: {n} available',{n:nf(av)}),'err')}
+  if(l)l.qty=want;else cart.lines.push({pid:p.id,...(vid?{vid,vname:(vOf(p,vid)||{}).name}:{}),name:vid?vName(p,vid):p.name,unit:un,factor:fc,price:unitPrice(p,cart.mode,un),cost:Math.round(num(p.cost)*fc*100)/100,qty});
   const nb=p.trackStock===false?null:nearBatch(p);
   if(nb){const d=daysTo(nb.exp);if(d<0)toast('⚠ '+t('{n}: batch expired on {d}',{n:p.name,d:fdk(nb.exp)}),'warn');else if(d<=expDays())toast('⚠ '+t('{n}: expires in {d} days',{n:p.name,d}),'warn')}
   renderCart();
   focusQty(p.id);
 }
 function setLineUnit(i,name){const cart=getCart(),l=cart.lines[i],p=l&&prod(l.pid);if(!p)return;
-  const fc=facOf(p,name),other=cart.lines.findIndex((x,j)=>j!==i&&x.pid===p.id&&(x.factor||1)===fc);
+  const fc=facOf(p,name),other=cart.lines.findIndex((x,j)=>j!==i&&x.pid===p.id&&(x.factor||1)===fc&&(x.vid||'')===(l.vid||''));
   l.unit=name;l.factor=fc;l.price=unitPrice(p,cart.mode,name);l.cost=Math.round(num(p.cost)*fc*100)/100;
   if(other>=0){cart.lines[other].qty+=l.qty;cart.lines.splice(i,1)}
-  if(p.trackStock!==false&&!DB.settings.allowNegative&&cartBase(cart,p.id)>stockOf(p)){toast(t('Not enough stock: {n} available',{n:nf(stockOf(p))}),'err')}
+  if(p.trackStock!==false&&!DB.settings.allowNegative&&cartBase(cart,p.id,undefined,l.vid)>availOf(p,l.vid)){toast(t('Not enough stock: {n} available',{n:nf(availOf(p,l.vid))}),'err')}
   renderCart()}
 function focusQty(pid){
   const i=getCart().lines.findIndex(x=>x.pid===pid),inp=i<0?null:$(`#cart [data-ci="${i}"]`);
@@ -1377,7 +1473,7 @@ function focusQty(pid){
 function setQty(i,v){
   const cart=getCart(),l=cart.lines[i];if(!l)return;
   if(v<=0){cart.lines.splice(i,1)}
-  else{const p=prod(l.pid);if(p&&p.trackStock!==false&&!DB.settings.allowNegative&&cartBase(cart,p.id,i)+v*(l.factor||1)>stockOf(p)){toast(t('Not enough stock: {n} available',{n:nf(stockOf(p))}),'err');v=Math.max(0,r3((stockOf(p)-cartBase(cart,p.id,i))/(l.factor||1)))}l.qty=v}
+  else{const p=prod(l.pid),av=p?availOf(p,l.vid):0;if(p&&p.trackStock!==false&&!DB.settings.allowNegative&&cartBase(cart,p.id,i,l.vid)+v*(l.factor||1)>av){toast(t('Not enough stock: {n} available',{n:nf(av)}),'err');v=Math.max(0,r3((av-cartBase(cart,p.id,i,l.vid))/(l.factor||1)))}l.qty=v}
   renderCart();
 }
 ACT.cq=el=>{const l=getCart().lines[+el.dataset.i];if(l)setQty(+el.dataset.i,l.qty+ +el.dataset.d)};
@@ -1451,7 +1547,7 @@ ACT.pay=()=>{
 function payDialog(c,cart,onOk,o={}){
   const P={rows:[{method:'Cash',amount:c.total}]};
   const methods=DB.settings.payMethods.includes('Cash')?DB.settings.payMethods:['Cash',...DB.settings.payMethods];
-  const m=modal(o.title||t('Payment'),`<div class="c"><div class="mut">${t('Total due')}</div><div style="font-size:46px;line-height:1.15;font-weight:800;color:var(--pri);margin-top:2px">${money(c.total)}</div></div><div id="payCh" class="row wrap mt" style="justify-content:center"></div><div id="payBody" class="mt"></div><div id="paySum" class="mt"></div>`,
+  const m=modal(o.title||t('Payment'),`<div class="c"><div class="mut">${t('Total due')}</div><div style="font-size:46px;line-height:1.15;font-weight:800;color:var(--pri);margin-top:2px">${money(c.total)}</div></div><div id="payCh" class="row wrap mt" style="justify-content:center"></div><div id="payBody" class="mt"></div><div id="paySum" class="mt"></div><div class="mt"><input id="payNote" maxlength="300" placeholder="${t('Internal note (not printed)')}" value="${esc(cart.inote||'')}" style="font-size:14px"></div>`,
     `<button class="btn" data-close>${t('Cancel')}</button><button class="btn" id="addPay">+ ${t('Split payment')}</button>${o.cod?`<button class="btn" id="codBtn" style="border-color:var(--warn);color:var(--warn)">${ic('truck')} ${t('Cash on Delivery')}</button>`:''}${o.credit?`<button class="btn" id="crBtn" style="border-color:var(--err);color:var(--err)">${ic('customers')} ${t('On credit')}</button>`:''}<button class="btn ok lg" id="payOk" style="min-width:180px">${t('Complete sale')}</button>`,'md paymodal');
   const FX=fxList().filter(x=>x.rate>0);
   const rem=()=>rnd(c.total-sum(P.rows,r=>num(r.amount)));
@@ -1493,6 +1589,7 @@ function payDialog(c,cart,onOk,o={}){
       const last=P.rows[P.rows.length-1];last.amount='';r=rem();focus=P.rows.length-1}
     P.rows.push({method:methods.find(x=>!P.rows.some(y=>y.method===x))||methods[0],amount:r});rows();
     const fi=$('[data-pa="'+(focus!=null?focus:P.rows.length-1)+'"]',m);if(fi){fi.focus();fi.select()}};
+  const pn=$('#payNote',m);if(pn)pn.oninput=()=>{cart.inote=pn.value};
   $('#payOk',m).onclick=()=>{closeM(m);onOk(P.rows)};
   if(o.cod)$('#codBtn',m).onclick=()=>{closeM(m);codForm(c)};
   if(o.credit)$('#crBtn',m).onclick=()=>creditForm(c,cart,P.rows,m);
@@ -1526,27 +1623,33 @@ function creditForm(c,cart,rows,payM){
     cart.customerId=id;closeM(m);closeM(payM);finishSale(c,use,{credit:true,customerId:id,days})};
 }
 function codForm(c){
+  const cart=getCart(),sug='DL-'+String((DB.counters.delivery||0)+1).padStart(5,'0');
   const m=modal(t('Cash on Delivery'),`<div class="c mb"><div class="mut">${t('Amount to collect')}</div><div style="font-size:34px;font-weight:800;color:var(--warn)">${money(c.total)}</div></div>
     <p class="mut sm c" style="margin-top:0">${t('Stock is deducted now. Payment is collected when the goods are delivered.')}</p>
-    <div class="grid2">${fld(t('Customer name'),inp('cn',''))}${fld(t('Phone'),inp('cp',''))}</div>${fld(t('Delivery address'),inp('ca',''))}${fld(t('Note'),inp('cx',''))}`,
+    <div class="grid2">${fld(t('Customer name'),inp('cn',''))}${fld(t('Phone'),inp('cp',''))}</div>${fld(t('Delivery address'),inp('ca',''))}
+    <div class="grid2">${fld(t('Delivery code'),inp('cc',sug))}${fld(t('Delivery status'),`<select name="cs">${DSTAT.map(([k,l])=>`<option value="${k}">${t(l)}</option>`).join('')}</select>`)}</div>
+    ${fld(t('Courier')+' ('+t('optional')+')',inp('cr',''))}${fld(t('Note'),inp('cx',''))}`,
     `<button class="btn" data-close>${t('Cancel')}</button><button class="btn pri" id="codOk">${t('Confirm COD order')}</button>`,'sm');
   m.querySelector('.mf').style.justifyContent='center';
   $('#codOk',m).onclick=()=>{const f=getForm(m);if(!f.cn.trim()&&!f.cp.trim())return toast(t('Enter the customer name or phone'),'warn');
-    closeM(m);finishSale(c,[],{cod:{name:f.cn.trim(),phone:f.cp.trim(),address:f.ca.trim(),note:f.cx.trim()}})};
+    let code=(f.cc||'').trim();if(!code||code===sug)code=nextNo('DL-','delivery');
+    else if(DB.sales.some(x=>x.cod&&x.cod.code===code)&&!confirm(t('This delivery code is already used. Use it again?')))return;
+    closeM(m);finishSale(c,[],{cod:{name:f.cn.trim(),phone:f.cp.trim(),address:f.ca.trim(),note:f.cx.trim(),code,courier:(f.cr||'').trim(),dstatus:f.cs||'pending'}})};
 }
 function finishSale(c,rows,opt={}){
   if(licLocked()){licGate();return}
   const cart=getCart(),sh=curShift(),b=branch(S.branchId);
   const {pays,paid,change}=settlePays(rows,c.total);
   const sale={id:uid(),no:nextNo(b.code+'-','sale:'+b.id),branchId:b.id,shiftId:sh?sh.id:null,userId:S.user.id,date:now(),
-    items:cart.lines.map(l=>({pid:l.pid,name:l.name,unit:l.unit,factor:l.factor||1,qty:l.qty,price:l.price,cost:l.cost})),
+    items:cart.lines.map(l=>({pid:l.pid,...(l.vid?{vid:l.vid,vname:l.vname}:{}),name:l.name,unit:l.unit,factor:l.factor||1,qty:l.qty,price:l.price,cost:l.cost})),
     subtotal:c.sub,discount:c.disc,discountInfo:cart.discount,tax:c.tax,taxMode:DB.settings.taxMode,taxRate:DB.settings.taxRate,
     total:c.total,payments:pays,tendered:paid,change,channel:cart.channel||chans()[0],priceMode:cart.mode||'retail',status:opt.cod?'cod':'completed'};
   if(opt.cod)sale.cod=opt.cod;
+  if(cart.inote&&cart.inote.trim())sale.inote=cart.inote.trim();
   const cid=opt.customerId||cart.customerId;if(cid&&cust(cid))sale.customerId=cid;
   if(opt.credit){sale.due=rnd(c.total-paid);sale.creditAmt=sale.due;const dd=Math.max(0,Math.floor(num(opt.days)));sale.creditDays=dd;if(dd>0)sale.dueDate=addDaysKey(dkey(),dd)}
   DB.sales.push(sale);
-  cart.lines.forEach((l,k)=>{const p=prod(l.pid);if(p&&p.trackStock!==false){const bq=r3(l.qty*(l.factor||1));addStock(p,b.id,-bq);if(lastAlloc.length)sale.items[k].bt=lastAlloc;addMove({type:'sale',pid:p.id,qty:-bq,ref:sale.no})}});
+  cart.lines.forEach((l,k)=>{const p=prod(l.pid);if(p&&p.trackStock!==false){const bq=r3(l.qty*(l.factor||1));addStock(p,b.id,-bq,{vid:l.vid});if(lastAlloc.length)sale.items[k].bt=lastAlloc;addMove({type:'sale',pid:p.id,...(l.vid?{vid:l.vid}:{}),qty:-bq,ref:sale.no})}});
   S.carts[b.id]=null;getCart();save();
   if(DB.settings.autoPrint)printReceipt(sale);
   const m=modal(t('Sale completed'),`<div class="c"><div class="ok" style="font-size:40px">✓</div><div class="b" style="font-size:18px">${esc(sale.no)}</div><div class="mut">${t('Total')}: ${money(sale.total)}</div>${sale.status==='cod'?`<div class="badge warn mt">${t('Cash on Delivery')} — ${t('to collect')}</div>`:''}${sale.due>0?`<div class="badge warn mt">${t('On credit')}: ${money(sale.due)} — ${esc((cust(sale.customerId)||{}).name||'')}</div>`:''}${change>0?`<div class="mut mt">${t('Change')}</div><div class="bigchg">${money(change)}</div>`:''}</div>`,
@@ -1558,11 +1661,11 @@ function finishSale(c,rows,opt={}){
 const RC_PAPERS={'58':{w:'56mm',fs:11,css:'@page{size:58mm auto;margin:2mm}'},'80':{w:'76mm',fs:12,css:'@page{size:80mm auto;margin:2mm}'},'A5':{w:'128mm',fs:14,css:'@page{size:A5 portrait;margin:10mm}'},'A4':{w:'186mm',fs:15,css:'@page{size:A4 portrait;margin:12mm}'}};
 const RC_MY=",'Myanmar Text','Noto Sans Myanmar','Padauk'";
 const RC_FONTS={sans:"Arial,Helvetica"+RC_MY+",sans-serif",serif:"Georgia,'Times New Roman'"+RC_MY+",serif",mono:"'Courier New'"+RC_MY+",monospace",round:"'Trebuchet MS',Verdana"+RC_MY+",sans-serif",display:"Impact,'Arial Black'"+RC_MY+",sans-serif"};
-const RC_DEF={title:'',sign:false,fs:'md',logo:true,addr:true,phone:true,cashier:true,channel:true,units:true,note:'',hFont:'mono',hSize:125,hAlign:'center',hBold:true,hItalic:false,bFont:'mono',amtBold:false,fBold:false,fItalic:false,fAlign:'center',fSize:100,fGap:0};
+const RC_DEF={title:'',sign:false,fs:'md',logo:true,addr:true,phone:true,cashier:true,channel:true,units:true,dcode:true,note:'',hFont:'mono',hSize:125,hAlign:'center',hBold:true,hItalic:false,bFont:'mono',amtBold:false,fBold:false,fItalic:false,fAlign:'center',fSize:100,fGap:0};
 function rcSlotOf(s,ov){return (ov&&ov.slot)||(s&&s.priceMode==='wholesale'?'wholesale':'retail')}
 function rcOpts(ov,slot){ov=ov||{};slot=slot||ov.slot||'retail';const D=DB.settings;let base=D,brc=D.rc;
   if(slot==='wholesale'){const w=D.wsRc||{};base=Object.assign({},D,{paper:w.paper||'A5'});if(w.receiptHeader!=null)base.receiptHeader=w.receiptHeader;if(w.receiptFooter!=null)base.receiptFooter=w.receiptFooter;brc=Object.assign({},D.rc,{title:'INVOICE',sign:true},w.rc)}
-  const st=Object.assign({},base,ov);const rc=Object.assign({},RC_DEF,brc,ov.rc);return {st,rc,pp:RC_PAPERS[st.paper]||RC_PAPERS['80'],slot}}
+  const st=Object.assign({},base,ov);if(st.paper==='A4'&&!planA4())st.paper='A5';const rc=Object.assign({},RC_DEF,brc,ov.rc);return {st,rc,pp:RC_PAPERS[st.paper]||RC_PAPERS['80'],slot}}
 function custBox(c){return c?[c.name,c.phone,c.address,c.city].filter(Boolean):[]}
 function receiptHTML(s,ov){
   const slot=rcSlotOf(s,ov),{st,rc,pp}=rcOpts(ov,slot),b=branch(s.branchId)||{},u=user(s.userId)||{},paper=st.paper,wide=paper==='A5'||paper==='A4';
@@ -1576,7 +1679,8 @@ function receiptHTML(s,ov){
   const ftr=`<div style="text-align:${rc.fAlign};${rc.fBold?'font-weight:700;':''}${rc.fItalic?'font-style:italic;':''}font-size:${num(rc.fSize)||100}%">${esc(st.receiptFooter||'')}${rc.note?'<br>'+esc(rc.note):''}</div>`;
   const gap=num(rc.fGap)>0?`<div style="height:${num(rc.fGap)}mm"></div>`:'';
   const void_=s.status==='void'?`<div class="cn b">*** ${t('VOID')} ***</div>`:'';
-  const codBlk=s.status==='cod'?`<div class="cn b">${t('CASH ON DELIVERY')}</div>${row(t('TO COLLECT'),A(money(s.total)))}${s.cod?`<div>${esc(s.cod.name)}${s.cod.phone?' · '+esc(s.cod.phone):''}</div>${s.cod.address?`<div>${esc(s.cod.address)}</div>`:''}${s.cod.note?`<div>${esc(s.cod.note)}</div>`:''}`:''}`:'';
+  const dcLine=(rc.dcode!==false&&s.cod&&s.cod.code)?row(t('Delivery code'),A(esc(s.cod.code))):'';
+  const codBlk=s.status==='cod'?`<div class="cn b">${t('CASH ON DELIVERY')}</div>${row(t('TO COLLECT'),A(money(s.total)))}${dcLine}${s.cod?`<div>${esc(s.cod.name)}${s.cod.phone?' · '+esc(s.cod.phone):''}</div>${s.cod.address?`<div>${esc(s.cod.address)}</div>`:''}${s.cod.note?`<div>${esc(s.cod.note)}</div>`:''}`:''}`:'';
   const pays=`${s.payments.length>1?row(t('Split payment'),''):''}${s.payments.map(p=>row(esc(payLabel(p)),A(money(p.amount)))).join('')}${s.change?row(t('Change'),A(money(s.change))):''}`;
   const credit=s.creditAmt>0?`<div style="font-weight:700">${row(t('ON CREDIT'),A(money(s.creditAmt)))}${s.customerId?`<div>${esc((c||{}).name||'')}</div>${row(t('Total owed'),A(money(custDue(s.customerId))))}`:''}${s.dueDate?row(t('Due date'),A(fdk(s.dueDate))):''}</div>`:'';
   const totals=`${s.discount?row(t('Discount'),A('-'+money(s.discount))):''}${s.tax?row(t('Tax')+' '+s.taxRate+'%'+(s.taxMode==='inclusive'?' ('+t('incl.')+')':''),A(money(s.tax))):''}<div class="tl" style="font-size:1.25em;font-weight:700"><span>${t('TOTAL')}</span><span>${money(s.total)}</span></div>`;
@@ -1593,7 +1697,7 @@ function receiptHTML(s,ov){
     const payRows=s.payments.map(p=>`<tr><td ${td('left')}>${esc(payLabel(p))}</td><td ${td('right')}>${A(money(p.amount))}</td></tr>`).join('')+(s.change?`<tr><td ${td('left')}>${t('Change')}</td><td ${td('right')}>${A(money(s.change))}</td></tr>`:'')+(s.creditAmt>0?`<tr style="font-weight:700"><td ${td('left')}>${t('ON CREDIT')}${c?' — '+esc(c.name):''}</td><td ${td('right')}>${A(money(s.creditAmt))}</td></tr>${s.customerId?`<tr><td ${td('left')}>${t('Total owed')}</td><td ${td('right')}>${A(money(custDue(s.customerId)))}</td></tr>`:''}`:'');
     const payTbl=`<div style="display:flex;justify-content:flex-end;margin-top:8px"><table style="width:${a4?'50':'62'}%;border-collapse:collapse;border:1px solid #444"><tbody>${payRows}</tbody></table></div>`;
     const sign=rc.sign?`<div style="display:flex;justify-content:space-between;margin-top:${a4?'48':'30'}px;gap:30px"><div style="flex:1;border-top:1px solid #000;text-align:center;padding-top:3px">${t('Prepared by')}</div><div style="flex:1;border-top:1px solid #000;text-align:center;padding-top:3px">${t('Received by')}</div></div>`:'';
-    return `<div class="rc" style="width:${pp.w};font-size:${fs}px;font-family:${bf};line-height:1.45">${hdrBlock}${ttl}${void_}${meta}${bill}${tbl}${s.status==='cod'?`<div style="${bd}padding:6px 10px;margin-top:8px">${codBlk}</div>`:''}${payTbl}
+    return `<div class="rc" style="width:${pp.w};font-size:${fs}px;font-family:${bf};line-height:1.45">${hdrBlock}${ttl}${void_}${meta}${bill}${tbl}${s.status==='cod'?`<div style="${bd}padding:6px 10px;margin-top:8px">${codBlk}</div>`:dcLine?`<div style="margin-top:6px">${dcLine}</div>`:''}${payTbl}
     ${sign}<hr style="margin-top:14px">${gap}${ftr}</div>`;
   }
   const items=paper==='80'?`<table><thead><tr><th align="left">${t('Product')}</th><th align="right">${t('Qty')}</th><th align="right">${t('Price')}</th><th align="right">${t('Amount')}</th></tr></thead><tbody>${s.items.map(i=>`<tr><td>${esc(i.name)}</td><td align="right">${qtyU(i)}</td><td align="right">${money(i.price)}</td><td align="right">${A(money(i.qty*i.price))}</td></tr>`).join('')}</tbody></table>`
@@ -1603,7 +1707,7 @@ function receiptHTML(s,ov){
   ${slot==='wholesale'?`<div class="cn b">${esc(t(title))}</div>`:''}${row(esc(s.no),fdt(s.date))}${row(rc.cashier!==false?t('Cashier')+': '+esc(u.name||u.username||''):'',rc.channel!==false&&chans().length>1?esc(CHN(saleChan(s))):'')}${cb.length?`<div>${t('Customer')}: ${cb.map(esc).join(', ')}</div>`:''}${s.priceMode==='wholesale'&&slot!=='wholesale'?`<div class="cn b">${t('WHOLESALE')}</div>`:''}${void_}<hr>
   ${items}<hr>
   ${totals}<hr>
-  ${s.status==='cod'?codBlk+'<hr>':''}
+  ${s.status==='cod'?codBlk+'<hr>':dcLine?dcLine+'<hr>':''}
   ${pays}${credit}<hr>
   ${gap}${ftr}</div>`;
 }
@@ -1631,7 +1735,7 @@ VIEWS.sales=function(){
   if(S.user.role==='cashier')L=L.filter(s=>s.userId===S.user.id);
   if(f.channel&&f.channel!=='all')L=L.filter(s=>saleChan(s)===f.channel);
   if(f.status==='due')L=L.filter(s=>s.status==='completed'&&s.due>0);else if(f.status==='overdue')L=L.filter(isOverdue);else if(f.status&&f.status!=='all')L=L.filter(s=>s.status===f.status);
-  if(f.q)L=L.filter(s=>s.no.toLowerCase().includes(f.q.toLowerCase())||s.items.some(i=>i.name.toLowerCase().includes(f.q.toLowerCase())));
+  if(f.q){const q=f.q.toLowerCase();L=L.filter(s=>s.no.toLowerCase().includes(q)||s.items.some(i=>i.name.toLowerCase().includes(q))||(s.inote||'').toLowerCase().includes(q)||s.cod&&[s.cod.code,s.cod.name,s.cod.phone,s.cod.courier].some(v=>(v||'').toLowerCase().includes(q)))}
   L.sort((a,b)=>b.date.localeCompare(a.date));
   const ok=L.filter(s=>s.status==='completed'),codL=L.filter(s=>s.status==='cod');
   main().innerHTML=`<div class="page-h"><h3>${t('Sales history')}</h3></div>
@@ -1639,10 +1743,10 @@ VIEWS.sales=function(){
     <button class="btn sm" data-act="salDay" data-d="-1" title="${t('Previous day')}">‹</button><label class="row sm mut" style="white-space:nowrap">${t('Pick a day')} <input type="date" id="sday" style="width:auto;min-height:34px" value="${f.from===f.to?f.from:''}"></label><button class="btn sm" data-act="salDay" data-d="1" title="${t('Next day')}">›</button></div>
   <div class="toolbar"><input type="date" id="sf" value="${f.from}"><span class="mut">→</span><input type="date" id="st2" value="${f.to}">
     <select id="sb2">${bs.length>1?`<option value="all" ${f.branch==='all'?'selected':''}>${t('All branches')}</option>`:''}${bs.map(b=>`<option value="${b.id}" ${f.branch===b.id?'selected':''}>${esc(b.name)}</option>`).join('')}</select>
-    <select id="sst">${[['all','All statuses'],['completed','Paid'],['cod','COD — unpaid'],...(creditOn()||DB.sales.some(x=>x.due>0)?[['due','Credit — unpaid'],['overdue','Credit — overdue']]:[]),['void','Void']].map(([k,l])=>`<option value="${k}" ${f.status===k?'selected':''}>${t(l)}</option>`).join('')}</select>${chans().length>1?`<select id="sch">${chanOpts(f.channel)}</select>`:''}<input id="sq" class="grow" placeholder="${t('Search receipt no. or product')}" value="${esc(f.q)}"></div>
+    <select id="sst">${[['all','All statuses'],['completed','Paid'],['cod','COD — unpaid'],...(creditOn()||DB.sales.some(x=>x.due>0)?[['due','Credit — unpaid'],['overdue','Credit — overdue']]:[]),['void','Void']].map(([k,l])=>`<option value="${k}" ${f.status===k?'selected':''}>${t(l)}</option>`).join('')}</select>${chans().length>1?`<select id="sch">${chanOpts(f.channel)}</select>`:''}<input id="sq" class="grow" placeholder="${t('Search receipt, product, note or delivery code')}" value="${esc(f.q)}"></div>
   <div class="${codL.length?'grid4':'grid3'} mb">${codL.length?`<div class="card kpi stat" style="border-color:var(--warn)"><span class="l">${t('COD to collect')}</span><span class="v warn">${money(sum(codL,s=>s.total))}</span><span class="s">${codL.length} ${t('orders')}</span></div>`:''}<div class="card kpi stat"><span class="l">${t('Orders')}</span><span class="v">${ok.length}</span></div><div class="card kpi stat"><span class="l">${t('Sales')}</span><span class="v">${money(sum(ok,s=>s.total))}</span></div><div class="card kpi stat"><span class="l">${t('Average order')}</span><span class="v">${money(ok.length?sum(ok,s=>s.total)/ok.length:0)}</span></div></div>
   <div class="tw"><table><thead><tr><th>${t('Receipt')}</th><th>${t('Date')}</th><th>${t('Branch')}</th><th>${t('Cashier')}</th>${chans().length>1?`<th>${t('Channel')}</th>`:''}<th class="r">${t('Items')}</th><th>${t('Payment')}</th><th class="r">${t('Total')}</th><th>${t('Status')}</th><th></th></tr></thead><tbody>
-  ${L.map(s=>`<tr><td class="b">${esc(s.no)}</td><td>${fdt(s.date)}</td><td>${esc(bname(s.branchId))}</td><td>${esc((user(s.userId)||{}).name||'')}</td>${chans().length>1?`<td><span class="badge">${esc(CHN(saleChan(s)))}</span></td>`:''}<td class="r">${nf(sum(s.items,i=>i.qty))}</td><td>${s.payments.map(p=>esc(PAYNAME(p.method))).join(' + ')}</td><td class="r b">${money(s.total)}</td><td>${s.status==='void'?`<span class="badge err">${t('Void')}</span>`:s.status==='cod'?`<span class="badge warn">COD</span>`:s.due>0?`<span class="badge err">${t('Owes')} ${money(s.due)}</span>`:`<span class="badge ok">${t('Paid')}</span>`}</td><td class="r"><button class="btn sm" data-act="saleView" data-id="${s.id}">${ic('eye')}</button></td></tr>`).join('')||`<tr><td colspan="9" class="empty">${t('No sales found')}</td></tr>`}</tbody></table></div>`;
+  ${L.map(s=>`<tr><td class="b">${esc(s.no)}${s.inote?` <span class="mut" title="${esc(s.inote)}">${ic('edit')}</span>`:''}${s.cod&&s.cod.code?`<div class="mut sm">${esc(s.cod.code)}</div>`:''}</td><td>${fdt(s.date)}</td><td>${esc(bname(s.branchId))}</td><td>${esc((user(s.userId)||{}).name||'')}</td>${chans().length>1?`<td><span class="badge">${esc(CHN(saleChan(s)))}</span></td>`:''}<td class="r">${nf(sum(s.items,i=>i.qty))}</td><td>${s.payments.map(p=>esc(PAYNAME(p.method))).join(' + ')}</td><td class="r b">${money(s.total)}</td><td>${s.status==='void'?`<span class="badge err">${t('Void')}</span>`:s.status==='cod'?`<span class="badge warn">COD${s.cod&&s.cod.dstatus&&s.cod.dstatus!=='pending'?' · '+dsLabel(s.cod.dstatus):''}</span>`:s.due>0?`<span class="badge err">${t('Owes')} ${money(s.due)}</span>`:`<span class="badge ok">${t('Paid')}</span>`}</td><td class="r"><button class="btn sm" data-act="saleView" data-id="${s.id}">${ic('eye')}</button></td></tr>`).join('')||`<tr><td colspan="9" class="empty">${t('No sales found')}</td></tr>`}</tbody></table></div>`;
   $('#sf').onchange=e=>{f.from=e.target.value;VIEWS.sales()};$('#st2').onchange=e=>{f.to=e.target.value;VIEWS.sales()};$('#sb2').onchange=e=>{f.branch=e.target.value;VIEWS.sales()};
   $('#sq').onchange=e=>{f.q=e.target.value;VIEWS.sales()};{const x=$('#sch');if(x)x.onchange=e=>{f.channel=e.target.value;VIEWS.sales()}}$('#sst').onchange=e=>{f.status=e.target.value;VIEWS.sales()};
   $('#sday').onchange=e=>{if(e.target.value){f.from=f.to=e.target.value;VIEWS.sales()}};
@@ -1654,20 +1758,24 @@ ACT.salDay=el=>{const f=S.sal;if(f.from!==f.to)f.to=f.from;f.from=f.to=shiftDay(
 ACT.saleView=el=>{
   const s=DB.sales.find(x=>x.id===el.dataset.id);if(!s)return;
   const m=modal(esc(s.no),`<div class="row wrap mb"><span class="mut">${fdt(s.date)}${multiBr()?' · '+esc(bname(s.branchId)):''} · ${esc((user(s.userId)||{}).name||'')}</span>${chans().length>1?` <span class="badge">${esc(CHN(saleChan(s)))}</span>`:''}<span class="sp"></span>${s.status==='void'?`<span class="badge err">${t('Void')}</span>`:s.status==='cod'?`<span class="badge warn">${t('COD — unpaid')}</span>`:''}</div>
-    ${s.cod?`<div class="card mb" style="padding:10px 12px;background:var(--bg)"><b>${esc(s.cod.name)}</b>${s.cod.phone?' · '+esc(s.cod.phone):''}${s.cod.address?'<br>'+esc(s.cod.address):''}${s.cod.note?'<br><span class="mut">'+esc(s.cod.note)+'</span>':''}${s.orderDate?`<br><span class="mut sm">${t('Ordered')}: ${fdt(s.orderDate)}</span>`:''}</div>`:''}
+    ${s.cod?`<div class="card mb" style="padding:10px 12px;background:var(--bg)"><b>${esc(s.cod.name)}</b>${s.cod.phone?' · '+esc(s.cod.phone):''}${s.cod.address?'<br>'+esc(s.cod.address):''}${s.cod.note?'<br><span class="mut">'+esc(s.cod.note)+'</span>':''}${s.cod.code?`<div class="row mt"><span class="mut sm">${t('Delivery code')}</span><b>${esc(s.cod.code)}</b></div>`:''}${s.cod.courier?`<div class="row"><span class="mut sm">${t('Courier')}</span><b>${esc(s.cod.courier)}</b></div>`:''}<div class="row mt"><span class="mut sm sp">${t('Delivery status')}</span>${s.status==='cod'?`<select id="svDs" style="width:auto;min-height:34px">${DSTAT.map(([k,l])=>`<option value="${k}" ${(s.cod.dstatus||'pending')===k?'selected':''}>${t(l)}</option>`).join('')}</select>`:`<span class="badge ok">${dsLabel(s.cod.dstatus||'delivered')}</span>`}</div>${s.orderDate?`<br><span class="mut sm">${t('Ordered')}: ${fdt(s.orderDate)}</span>`:''}</div>`:''}
     <div class="tw"><table><thead><tr><th>${t('Product')}</th><th class="r">${t('Qty')}</th><th class="r">${t('Price')}</th><th class="r">${t('Amount')}</th></tr></thead><tbody>${s.items.map(i=>`<tr><td class="w">${esc(i.name)}</td><td class="r">${qtyU(i)}</td><td class="r">${money(i.price)}</td><td class="r">${money(i.qty*i.price)}</td></tr>`).join('')}</tbody>
     <tfoot>${s.discount?`<tr><td colspan="3" class="r">${t('Discount')}</td><td class="r">−${money(s.discount)}</td></tr>`:''}${s.tax?`<tr><td colspan="3" class="r">${t('Tax')}</td><td class="r">${money(s.tax)}</td></tr>`:''}<tr><td colspan="3" class="r">${t('Total')}</td><td class="r">${money(s.total)}</td></tr></tfoot></table></div>
+    <div class="card mt" style="padding:10px 12px;background:var(--bg)"><div class="row"><span class="mut sm sp">${t('Internal note (not printed)')}</span><button class="btn sm" id="svNote">${ic('edit')}</button></div><div id="svNoteV" style="white-space:pre-wrap">${s.inote?esc(s.inote):'<span class="mut">—</span>'}</div></div>
     ${s.customerId&&cust(s.customerId)?`<div class="row mt"><span class="sp mut">${t('Customer')}</span><b>${esc(cust(s.customerId).name)}</b></div>`:''}${s.creditAmt>0?`<div class="row"><span class="sp">${t('On credit')}</span><b class="warn">${money(s.creditAmt)}</b></div>${s.recv>0?`<div class="row"><span class="sp mut">${t('Received later')}</span><span>${money(s.recv)}</span></div>`:''}<div class="row"><span class="sp">${t('Still owed')}</span><b class="${s.due>0?'err':'ok'}">${money(s.due)}</b></div>${s.dueDate?`<div class="row"><span class="sp">${t('Due date')}</span><b class="${isOverdue(s)?'err':''}">${fdk(s.dueDate)}${isOverdue(s)?' · '+daysLate(s)+' '+t('days late'):''}</b></div>`:''}`:''}
     <div class="mt">${s.payments.map(p=>`<div class="row"><span class="sp">${esc(payLabel(p))}</span><b>${money(p.amount)}</b></div>`).join('')}${s.change?`<div class="row mut"><span class="sp">${t('Change')}</span><span>${money(s.change)}</span></div>`:''}${s.voidReason?`<div class="err mt">${t('Void reason')}: ${esc(s.voidReason)}</div>`:''}</div>`,
     `<button class="btn" id="svPv" title="${t('Print preview')}">${ic('eye')}</button><button class="btn" id="svP">${ic('print')} ${t('Reprint')}</button>${s.status==='cod'?`<button class="btn ok" data-act="codCollect" data-id="${s.id}">${t('Collect payment')}</button>`:''}${s.due>0&&s.status==='completed'?`<button class="btn ok" data-act="custRecv" data-id="${s.customerId}">${t('Receive payment')}</button>`:''}${isMgr()&&(s.status==='completed'||s.status==='cod')?`<button class="btn danger" id="svV">${s.status==='cod'?t('Cancel COD order'):t('Void sale')}</button>`:''}<button class="btn pri" data-close>${t('Close')}</button>`,'md');
   $('#svP',m).onclick=()=>printReceipt(s);$('#svPv',m).onclick=()=>printReceipt(s,true);
   const v=$('#svV',m);if(v)v.onclick=()=>voidSale(s,m);
+  const ds=$('#svDs',m);if(ds)ds.onchange=()=>{s.cod.dstatus=ds.value;save();toast(t('Delivery status updated'),'ok');if(location.hash==='#sales')VIEWS.sales()};
+  $('#svNote',m).onclick=async()=>{const v2=await promptBox(t('Internal note (not printed)'),t('Note'),{value:s.inote||''});if(v2==null)return;if(v2)s.inote=v2;else delete s.inote;save();$('#svNoteV',m).innerHTML=s.inote?esc(s.inote):'<span class="mut">—</span>'};
 };
 ACT.codCollect=el=>{const s=DB.sales.find(x=>x.id===el.dataset.id);if(!s||s.status!=='cod')return;
   const sh=curShift(s.branchId);if(!sh&&shiftMode()==='required'){toast(t('Open a shift first'),'warn');return openShiftModal(()=>ACT.codCollect(el))}
   closeM(el);
   payDialog({total:s.total},s,rows=>{
     const r=settlePays(rows,s.total);
+    if(s.cod)s.cod.dstatus='delivered';
     Object.assign(s,{orderDate:s.date,date:now(),shiftId:sh?sh.id:null,payments:r.pays,tendered:r.paid,change:r.change,status:'completed',collectBy:S.user.id});
     save();toast(t('Payment collected'),'ok');if(DB.settings.autoPrint)printReceipt(s);
     if(r.change>0){const m2=modal(t('Payment collected'),`<div class="c"><div class="b" style="font-size:18px">${esc(s.no)}</div><div class="mut mt">${t('Change')}</div><div class="bigchg">${money(r.change)}</div></div>`,`<button class="btn pri" data-close>OK</button>`,'sm');m2.querySelector('.mf').style.justifyContent='center'}
@@ -1683,7 +1791,7 @@ async function voidSale(s,m){
     if(!refundShift)return toast(t('Open a shift first — the cash refund is recorded in your current shift'),'err');
   }
   s.status='void';s.voidReason=reason;s.voidAt=now();s.voidBy=S.user.id;
-  s.items.forEach(i=>{const p=prod(i.pid);if(p&&p.trackStock!==false){const bq=r3(i.qty*(i.factor||1));addStock(p,s.branchId,bq,{bt:i.bt});addMove({type:'void',pid:p.id,qty:bq,ref:s.no,branchId:s.branchId})}});
+  s.items.forEach(i=>{const p=prod(i.pid);if(p&&p.trackStock!==false){const bq=r3(i.qty*(i.factor||1));addStock(p,s.branchId,bq,{bt:i.bt,vid:i.vid});addMove({type:'void',pid:p.id,...(i.vid?{vid:i.vid}:{}),qty:bq,ref:s.no,branchId:s.branchId})}});
   if(refundShift)DB.cashEntries.push({id:uid(),branchId:s.branchId,shiftId:refundShift.id,date:now(),type:'out',kind:'refund',amount:cashPaid,reason:'Refund '+s.no,userId:S.user.id});
   save();toast(t('Sale voided'),'ok');closeM(m);renderView();
 }
@@ -1699,40 +1807,67 @@ VIEWS.inventory=function(){
   const head=`<div class="page-h"><h3>${t('Inventory')} ${multiBr()?`<span class="mut sm">· ${esc(bname(S.branchId))}</span>`:''}</h3>${f.tab==='products'?`
     <button class="btn" data-act="catMgr">${t('Categories')}</button><button class="btn" data-act="transfer">${ic('swap')} ${t('Transfer')}</button>
     <button class="btn" data-act="impXlsx">${ic('upload')} ${t('Import Excel')}</button><button class="btn" data-act="expXlsx">${ic('download')} ${t('Export Excel')}</button><button class="btn" data-act="expGSheet">☁ ${t('Google Sheets')}</button>
-    <button class="btn pri" data-act="prodNew">${ic('plus')} ${t('Add product')}</button>`:''}</div>`+tabsHTML([['products','Products'],['moves','Stock movements']],f.tab,'invTab');
+    <button class="btn pri" data-act="prodNew">${ic('plus')} ${t('Add product')}</button>`:''}</div>`+tabsHTML([['products','Products'],['moves','Stock movements'],['transfers','Transfers']],f.tab,'invTab');
   if(f.tab==='moves')return invMoves(head);
+  if(f.tab==='transfers')return invTransfers(head);
   let L=DB.products.filter(p=>(!f.cat||p.categoryId===f.cat)&&(!f.low||lowStock(p,S.branchId)));
-  if(f.q){const q=f.q.toLowerCase();L=L.filter(p=>p.name.toLowerCase().includes(q)||(p.sku||'').toLowerCase().includes(q)||(p.barcode||'').includes(q))}
+  if(f.q){const q=f.q.toLowerCase();L=L.filter(p=>p.name.toLowerCase().includes(q)||(p.sku||'').toLowerCase().includes(q)||(p.barcode||'').includes(q)||(varsOn()&&(p.variants||[]).some(v=>(v.name||'').toLowerCase().includes(q)||(v.sku||'').toLowerCase().includes(q)||(v.barcode||'').includes(q))))}
   L.sort((a,b)=>a.name.localeCompare(b.name));
   const val=sum(DB.products.filter(p=>p.trackStock!==false),p=>Math.max(0,stockOf(p))*p.cost),rv=sum(DB.products.filter(p=>p.trackStock!==false),p=>Math.max(0,stockOf(p))*p.price);
   main().innerHTML=head+`<div class="grid3 mb"><div class="card kpi stat"><span class="l">${t('Products')}</span><span class="v">${DB.products.length}</span><span class="s">${DB.products.filter(p=>lowStock(p,S.branchId)).length} ${t('low / out of stock')}</span></div>
     <div class="card kpi stat"><span class="l">${t('Stock value (cost)')}</span><span class="v">${money(val)}</span></div><div class="card kpi stat"><span class="l">${t('Stock value (retail)')}</span><span class="v">${money(rv)}</span></div></div>
+  ${multiBr()?`<div class="card mb" style="padding:10px 14px"><div class="b mb">${t('Stock value by store (cost)')}</div><div class="row wrap" style="gap:18px">${myBranches().map(b=>`<div><span class="mut sm">${esc(b.name)}</span><br><b>${money(sum(DB.products.filter(p=>p.trackStock!==false),p=>Math.max(0,stockOf(p,b.id))*p.cost))}</b></div>`).join('')}<div><span class="mut sm">${t('All stores')}</span><br><b style="color:var(--pri)">${money(sum(myBranches(),b=>sum(DB.products.filter(p=>p.trackStock!==false),p=>Math.max(0,stockOf(p,b.id))*p.cost)))}</b></div></div></div>`:''}
   <div class="toolbar"><input id="iq" class="grow" placeholder="${t('Search name, SKU or barcode')}" value="${esc(f.q)}">
     <select id="ic2"><option value="">${t('All categories')}</option>${DB.categories.map(c=>`<option value="${c.id}" ${f.cat===c.id?'selected':''}>${esc(c.name)}</option>`).join('')}</select>
-    <label class="row sm"><input type="checkbox" id="il" ${f.low?'checked':''}> ${t('Low stock only')}</label></div>
-  <div class="tw"><table><thead><tr><th>${t('Product')}</th><th>${t('Barcode')}</th><th>${t('Category')}</th><th class="r">${t('Cost')}</th><th class="r">${t('Price')}</th><th class="r">${t('Stock')}</th><th>${t('Status')}</th><th></th></tr></thead><tbody>
-  ${L.map(p=>{const s=stockOf(p),lo=lowStock(p,S.branchId);return `<tr><td class="w"><b>${esc(p.name)}</b><div class="mut sm">${esc(p.sku||'')}</div></td><td class="mut">${esc(p.barcode||'—')}</td><td>${esc((cat(p.categoryId)||{}).name||'—')}</td><td class="r">${money(p.cost)}</td><td class="r">${money(p.price)}</td>
-    <td class="r b ${s<=0&&p.trackStock!==false?'err':lo?'warn':''}">${p.trackStock===false?'—':nf(s)+' <span class="mut sm">'+esc(p.unit||'')+'</span>'+(stockTxt(p,s)?'<div class="mut sm">≈ '+stockTxt(p,s)+'</div>':'')+expTag(p)}</td><td>${p.active===false?`<span class="badge gr">${t('Inactive')}</span>`:lo?`<span class="badge warn">${t('Low')}</span>`:`<span class="badge ok">${t('Active')}</span>`}</td>
-    <td class="r"><button class="btn sm" data-act="prodAdj" data-id="${p.id}" title="${t('Adjust stock')}">±</button> <button class="btn sm" data-act="prodBc" data-id="${p.id}" title="${t('Barcode')}">${ic('barcode')}</button> <button class="btn sm" data-act="prodEdit" data-id="${p.id}">${ic('edit')}</button> <button class="btn sm danger" data-act="prodDel" data-id="${p.id}">${ic('trash')}</button></td></tr>`}).join('')||`<tr><td colspan="8" class="empty">${t('No products found')}</td></tr>`}</tbody></table></div>`;
+    <label class="row sm"><input type="checkbox" id="il" ${f.low?'checked':''}> ${t('Low stock only')}</label>${isMgr()?`<button class="btn danger hide" id="bulkDel"></button>`:''}</div>
+  <div class="tw"><table><thead><tr>${isMgr()?`<th style="width:34px"><input type="checkbox" id="selAll"></th>`:''}<th>${t('Product')}</th><th>${t('Barcode')}</th><th>${t('Category')}</th><th class="r">${t('Cost')}</th><th class="r">${t('Price')}</th><th class="r">${t('Stock')}</th>${multiBr()?`<th class="r">${t('All stores')}</th>`:''}<th>${t('Status')}</th><th></th></tr></thead><tbody>
+  ${L.map(p=>{const s=stockOf(p),lo=lowStock(p,S.branchId);return `<tr>${isMgr()?`<td><input type="checkbox" class="selP" data-id="${p.id}" ${f.sel[p.id]?'checked':''}></td>`:''}<td class="w"><b>${esc(p.name)}</b><div class="mut sm">${esc(p.sku||'')}${hasVars(p)?' · '+p.variants.length+' '+t('variants'):''}</div>${hasVars(p)?`<div class="mut sm">${p.variants.map(v=>esc(v.name)+': '+nf(vStock(p,v.id))).join(' · ')}</div>`:''}</td><td class="mut">${esc(p.barcode||'—')}</td><td>${esc((cat(p.categoryId)||{}).name||'—')}</td><td class="r">${money(p.cost)}</td><td class="r">${money(p.price)}</td>
+    <td class="r b ${s<=0&&p.trackStock!==false?'err':lo?'warn':''}">${p.trackStock===false?'—':nf(s)+' <span class="mut sm">'+esc(p.unit||'')+'</span>'+(stockTxt(p,s)?'<div class="mut sm">≈ '+stockTxt(p,s)+'</div>':'')+expTag(p)}</td>${multiBr()?`<td class="r">${p.trackStock===false?'—':allStoresCell(p)}</td>`:''}<td>${p.active===false?`<span class="badge gr">${t('Inactive')}</span>`:lo?`<span class="badge warn">${t('Low')}</span>`:`<span class="badge ok">${t('Active')}</span>`}</td>
+    <td class="r"><button class="btn sm" data-act="prodAdj" data-id="${p.id}" title="${t('Adjust stock')}">±</button> <button class="btn sm" data-act="prodBc" data-id="${p.id}" title="${t('Barcode')}">${ic('barcode')}</button> <button class="btn sm" data-act="prodEdit" data-id="${p.id}">${ic('edit')}</button> <button class="btn sm danger" data-act="prodDel" data-id="${p.id}">${ic('trash')}</button></td></tr>`}).join('')||`<tr><td colspan="9" class="empty">${t('No products found')}</td></tr>`}</tbody></table></div>`;
+  if(isMgr()){const shown=L.map(p=>p.id),upd=()=>{const ids=Object.keys(f.sel).filter(k=>f.sel[k]),b=$('#bulkDel');b.classList.toggle('hide',!ids.length);b.textContent=t('Delete selected')+' ('+ids.length+')';const a=$('#selAll');a.checked=shown.length>0&&shown.every(i=>f.sel[i])};
+    $$('.selP').forEach(c=>c.onchange=()=>{if(c.checked)f.sel[c.dataset.id]=1;else delete f.sel[c.dataset.id];upd()});
+    $('#selAll').onchange=e=>{shown.forEach(i=>{if(e.target.checked)f.sel[i]=1;else delete f.sel[i]});$$('.selP').forEach(c=>c.checked=e.target.checked);upd()};
+    $('#bulkDel').onclick=bulkDelProducts;upd()}
   $('#iq').onchange=e=>{f.q=e.target.value;VIEWS.inventory()};$('#ic2').onchange=e=>{f.cat=e.target.value;VIEWS.inventory()};$('#il').onchange=e=>{f.low=e.target.checked;VIEWS.inventory()};
 };
+async function bulkDelProducts(){
+  const f=S.inv,ids=Object.keys(f.sel).filter(k=>f.sel[k]&&prod(k));if(!ids.length)return;
+  const hist=id=>DB.sales.some(s=>s.items.some(i=>i.pid===id))||DB.purchases.some(s=>s.items.some(i=>i.pid===id))||DB.movements.some(m=>m.pid===id&&m.type!=='opening');
+  const used=ids.filter(hist),free=ids.filter(i=>!used.includes(i));
+  const msg=t('Delete {n} selected products?',{n:ids.length})+(used.length?' '+t('{n} of them have history and will be set to Inactive instead of deleted.',{n:used.length}):'');
+  if(!await confirmBox(msg,{danger:true,ok:'Delete'}))return;
+  used.forEach(id=>{const p=prod(id);p.active=false;p.updatedAt=now()});
+  DB.products=DB.products.filter(x=>!free.includes(x.id));DB.movements=DB.movements.filter(m=>!free.includes(m.pid));
+  f.sel={};save();toast(t('Done')+': '+free.length+' '+t('deleted')+', '+used.length+' '+t('set to Inactive'),'ok');renderView();
+}
 ACT.prodNew=()=>productModal();
 ACT.prodEdit=el=>productModal(prod(el.dataset.id));
-ACT.prodBc=el=>{S.bc.items[el.dataset.id]=(S.bc.items[el.dataset.id]||0)+1;toast(t('Added to barcode labels'),'ok');location.hash='#barcode'};
+ACT.prodBc=el=>{const p=prod(el.dataset.id);if(hasVars(p))p.variants.forEach(v=>{const k=p.id+'|'+v.id;S.bc.items[k]=(S.bc.items[k]||0)+1});else S.bc.items[el.dataset.id]=(S.bc.items[el.dataset.id]||0)+1;toast(t('Added to barcode labels'),'ok');location.hash='#barcode'};
 function productModal(p){
   const nw=!p;p=p||{name:'',sku:'',barcode:'',categoryId:(DB.categories[0]||{}).id||'',unit:'pcs',cost:0,price:0,minStock:0,trackStock:true,active:true};
   const m=modal(nw?t('Add product'):t('Edit product'),`
     ${fld(t('Product name')+' *',inp('name',p.name))}
     <div class="grid2">${fld('SKU',inp('sku',p.sku,`placeholder="${t('auto')}"`))}${fld(t('Barcode'),`<div class="row"><input name="barcode" value="${esc(p.barcode||'')}" placeholder="${t('scan or type')}"><button type="button" class="btn sm" id="pgen">${t('Generate')}</button></div>`)}</div>
-    <div class="grid2">${fld(t('Category'),`<select name="categoryId"><option value="">—</option>${opts(DB.categories.map(c=>[c.id,c.name]),p.categoryId)}</select>`)}${fld(t('Unit'),`<input name="unit" list="unitList" value="${esc(p.unit||'')}"><datalist id="unitList">${unitList().map(u=>`<option value="${esc(u)}">`).join('')}</datalist>`)}</div>
+    <div class="grid2">${fld(t('Category'),`<select name="categoryId" id="pcSel"><option value="">—</option>${opts(DB.categories.map(c=>[c.id,c.name]),p.categoryId)}<option value="__new">＋ ${t('New category…')}</option></select><input name="newCat" id="pcNew" class="hide" maxlength="40" placeholder="${t('Type the new category name')}" style="margin-top:6px">`)}${fld(t('Unit'),`<input name="unit" list="unitList" value="${esc(p.unit||'')}"><datalist id="unitList">${unitList().map(u=>`<option value="${esc(u)}">`).join('')}</datalist>`)}</div>
     <div class="grid3">${fld(t('Cost price'),`<input name="cost" type="number" step="any" min="0" value="${p.cost}">`)}${fld(t('Selling price'),`<input name="price" type="number" step="any" min="0" value="${p.price}">`)}${fld(t('Min stock alert'),`<input name="minStock" type="number" step="any" min="0" value="${p.minStock||0}">`)}</div>
     ${wholesaleOn()?fld(t('Wholesale price'),`<input name="wprice" type="number" step="any" min="0" value="${p.wprice||''}" placeholder="${t('Leave empty to use the retail price')}">`):''}
     <div class="fg"><label class="f">${t('Other units (e.g. 1 box = 12 pcs)')}</label><div id="uomBox"></div><button type="button" class="btn sm" id="uomAdd">${ic('plus')} ${t('Add unit')}</button><div class="mut sm mt">${t('Stock is counted in the main unit above. Prices left empty = main price × amount. The barcode is optional (scan a box barcode to sell a box).')}</div></div>
-    ${nw?fld(t('Opening stock')+' — '+esc(bname(S.branchId)),`<input name="open" type="number" step="any" min="0" value="0">`)+`<div class="grid2">${fld(t('Expiry date (optional)'),`<input name="oexp" type="date">`)}${fld(t('Batch no. (optional)'),inp('ono'))}</div>`:`<div class="fg"><label class="f">${t('Stock by branch')}</label>${DB.branches.map(b=>`<div class="row sm"><span class="sp">${esc(b.name)}</span><b>${nf(stockOf(p,b.id))}${stockTxt(p,stockOf(p,b.id))?` <span class="mut sm">(${stockTxt(p,stockOf(p,b.id))})</span>`:''}</b></div>`).join('')}</div>${(bl=>bl.length?`<div class="fg"><label class="f">${t('Batches & expiry')} — ${esc(bname(S.branchId))}</label>${bl.map(x=>{const d=x.exp?daysTo(x.exp):null;return `<div class="row sm"><span class="sp">${esc(x.no||'—')} · ${x.exp?fdk(x.exp):t('No expiry')}${d!=null&&d<0?` <span class="badge err">${t('Expired')}</span>`:d!=null&&d<=expDays()?` <span class="badge warn">${d} ${t('days')}</span>`:''}</span><b>${nf(x.qty)}</b></div>`}).join('')}</div>`:'')(batchesOf(p.id,S.branchId))}`}
+    ${nw?`<div id="openBox">`+fld(t('Opening stock')+' — '+esc(bname(S.branchId)),`<input name="open" type="number" step="any" min="0" value="0">`)+`<div class="grid2">${fld(t('Expiry date (optional)'),`<input name="oexp" type="date">`)}${fld(t('Batch no. (optional)'),inp('ono'))}</div></div>`:`<div class="fg"><label class="f">${t('Stock by branch')}</label>${DB.branches.map(b=>`<div class="row sm"><span class="sp">${esc(b.name)}</span><b>${nf(stockOf(p,b.id))}${stockTxt(p,stockOf(p,b.id))?` <span class="mut sm">(${stockTxt(p,stockOf(p,b.id))})</span>`:''}</b></div>`).join('')}</div>${(bl=>bl.length?`<div class="fg"><label class="f">${t('Batches & expiry')} — ${esc(bname(S.branchId))}</label>${bl.map(x=>{const d=x.exp?daysTo(x.exp):null;return `<div class="row sm"><span class="sp">${esc(x.no||'—')} · ${x.exp?fdk(x.exp):t('No expiry')}${d!=null&&d<0?` <span class="badge err">${t('Expired')}</span>`:d!=null&&d<=expDays()?` <span class="badge warn">${d} ${t('days')}</span>`:''}</span><b>${nf(x.qty)}</b></div>`}).join('')}</div>`:'')(batchesOf(p.id,S.branchId))}`}
+    ${varsOn()?`<div class="fg"><label class="f">${t('Variants')} <span class="mut sm">— ${t('same price, separate barcode and stock')}</span></label><div id="varBox"></div><button type="button" class="btn sm" id="varAdd">${ic('plus')} ${t('Add variant')}</button><div class="mut sm mt" id="varNote"></div></div>`:''}
     <div class="fg"><label class="f">${t('Product picture (optional)')}</label><div class="row" style="align-items:center"><div class="pimgbox" id="pimgBox"></div><div><button type="button" class="btn sm" id="pimgUp">${ic('upload')} ${t('Upload')}</button> <button type="button" class="btn sm danger" id="pimgDel">${t('Remove')}</button><div class="mut sm mt">${t('Shown on the POS item card. Leave empty to show the name only.')}</div></div></div></div>
     <div class="row wrap"><label class="row"><input type="checkbox" name="trackStock" ${p.trackStock!==false?'checked':''}> ${t('Track stock')}</label><label class="row"><input type="checkbox" name="active" ${p.active!==false?'checked':''}> ${t('Active (sellable)')}</label></div>`,
     `<button class="btn" data-close>${t('Cancel')}</button><button class="btn pri" id="psave">${t('Save')}</button>`,'md');
   const uoms=uomsOf(p).map(u=>({...u})),uw=wholesaleOn();
+  {const cs=$('#pcSel',m),cn=$('#pcNew',m);if(cs)cs.onchange=()=>{const on=cs.value==='__new';cn.classList.toggle('hide',!on);if(on&&!TOUCH)cn.focus()}}
+  const vs=varsOn()?(p.variants||[]).map(v=>({id:v.id,name:v.name,barcode:v.barcode||'',sku:v.sku||'',q:vStock(p,v.id),q0:vStock(p,v.id)})):[];
+  const vRead=()=>{$$('.varr',m).forEach(r=>{const v=vs[+r.dataset.vi];if(!v)return;$$('[data-vf]',r).forEach(i=>v[i.dataset.vf]=i.value)})};
+  const vDraw=()=>{const bx=$('#varBox',m);if(!bx)return;
+    bx.innerHTML=vs.map((v,i)=>`<div class="varr row wrap" data-vi="${i}" style="gap:6px;margin-bottom:6px;align-items:center"><input data-vf="name" value="${esc(v.name)}" placeholder="${t('Variant name')} (${t('e.g. Red / 500ml')})" style="flex:2;min-width:120px"><input data-vf="barcode" value="${esc(v.barcode)}" placeholder="${t('Barcode')}" style="flex:2;min-width:110px"><button type="button" class="btn sm" data-vg="${i}">${t('Generate')}</button><input data-vf="q" type="number" step="any" min="0" value="${v.q}" title="${t('Stock')} — ${esc(bname(S.branchId))}" style="width:84px" placeholder="${t('Stock')}"><span class="mut sm" style="min-width:70px">${esc(v.sku||t('auto SKU'))}</span><button type="button" class="btn sm danger" data-vx="${i}">${ic('x')}</button></div>`).join('')||`<div class="mut sm">${t('No variants — the product is sold as a single item.')}</div>`;
+    $$('[data-vg]',bx).forEach(b=>b.onclick=()=>{vRead();vs[+b.dataset.vg].barcode=genEAN();vDraw()});
+    $$('[data-vx]',bx).forEach(b=>b.onclick=()=>{vRead();const v=vs[+b.dataset.vx],old=v.id&&vOf(p,v.id);if(old&&sum(Object.values(old.stock||{}),x=>+x||0)!==0)return toast(t('This variant still has stock. Set its stock to 0 first.'),'warn');vs.splice(+b.dataset.vx,1);vDraw()});
+    const ob=$('#openBox',m);if(ob)ob.classList.toggle('hide',vs.length>0);
+    const nt=$('#varNote',m);if(nt){const un=nw?0:unassigned(p);nt.textContent=!nw&&vs.length&&un>0?t('Unassigned stock')+': '+nf(un)+' — '+t('type the quantity of each variant (it is taken from this stock).'):''}};
+  if($('#varAdd',m))$('#varAdd',m).onclick=()=>{vRead();vs.push({id:'',name:'',barcode:'',sku:'',q:0,q0:0});vDraw()};vDraw();
   const uDraw=()=>{$('#uomBox',m).innerHTML=uoms.map((u,i)=>`<div class="uomr" data-ui="${i}"><input data-uf="name" list="unitList" value="${esc(u.name)}" placeholder="${t('Unit')} (box)" style="max-width:110px"><span>=</span><input data-uf="factor" type="number" step="any" min="0" value="${u.factor||''}" placeholder="12" style="max-width:80px"><span class="mut sm">${esc(m.querySelector('[name=unit]').value||'pcs')}</span><input data-uf="price" type="number" step="any" min="0" value="${u.price||''}" placeholder="${t('Price')}">${uw?`<input data-uf="wprice" type="number" step="any" min="0" value="${u.wprice||''}" placeholder="${t('Wholesale price')}">`:''}<input data-uf="barcode" value="${esc(u.barcode||'')}" placeholder="${t('Barcode')}"><button type="button" class="btn sm danger" data-ux="${i}">${ic('x')}</button></div>`).join('');
     $$('[data-ux]',m).forEach(b=>b.onclick=()=>{uRead();uoms.splice(+b.dataset.ux,1);uDraw()})};
   const uRead=()=>{$$('.uomr',m).forEach(r=>{const u=uoms[+r.dataset.ui];if(!u)return;$$('[data-uf]',r).forEach(i=>u[i.dataset.uf]=i.value)})};
@@ -1756,10 +1891,23 @@ function productModal(p){
       if(seen.has(nm))return toast(t('Unit name already used: {n}',{n:nm}),'err');seen.add(nm);
       const bc=String(u.barcode||'').trim();if(bc&&(DB.products.some(x=>x.id!==p.id&&(x.barcode===bc||uomsOf(x).some(y=>y.barcode===bc)))||bc===f.barcode))return toast(t('Barcode already used by another product'),'err');
       clean.push({name:nm,factor:num(u.factor),price:num(u.price),wprice:num(u.wprice),barcode:bc})}
-    const rec=nw?{id:uid(),stock:{}}:p;rec.uoms=clean;
-    Object.assign(rec,{name:f.name,sku:f.sku,barcode:f.barcode,categoryId:f.categoryId,unit:f.unit.trim(),cost:num(f.cost),price:num(f.price),wprice:f.wprice!==undefined?num(f.wprice):(rec.wprice||0),minStock:num(f.minStock),trackStock:f.trackStock,active:f.active,updatedAt:now()});
+    let vpairs=[];
+    if(varsOn()){vRead();const rows=vs.filter(v=>(v.name||'').trim()||(v.barcode||'').trim()),nmSeen=new Set(),bcs=new Set();
+      for(const r of rows){const nm=(r.name||'').trim(),bc=(r.barcode||'').trim();
+        if(!nm)return toast(t('Enter a name for every variant'),'err');
+        if(nmSeen.has(nm.toLowerCase()))return toast(t('Variant name already used: {n}',{n:nm}),'err');nmSeen.add(nm.toLowerCase());
+        if(bc){if(bcs.has(bc)||bc===f.barcode||DB.products.some(x=>(x.id!==p.id&&(x.barcode===bc||uomsOf(x).some(y=>y.barcode===bc)))||(x.variants||[]).some(v=>v.barcode===bc&&v.id!==r.id)))return toast(t('Barcode already used by another product'),'err');bcs.add(bc)}}
+      vpairs=rows.map(r=>({r}))}
+    const rec=nw?{id:uid(),stock:{}}:p;rec.uoms=clean;const oldPrice=num(rec.price);
+    let catId=f.categoryId;
+    if(catId==='__new'){const nn=(f.newCat||'').trim();if(!nn)catId='';else{let c0=DB.categories.find(c=>c.name.toLowerCase()===nn.toLowerCase());if(!c0){c0={id:uid(),name:nn};DB.categories.push(c0)}catId=c0.id}}
+    Object.assign(rec,{name:f.name,sku:f.sku,barcode:f.barcode,categoryId:catId,unit:f.unit.trim(),cost:num(f.cost),price:num(f.price),wprice:f.wprice!==undefined?num(f.wprice):(rec.wprice||0),minStock:num(f.minStock),trackStock:f.trackStock,active:f.active,updatedAt:now()});
     if(pimg)rec.img=pimg;else delete rec.img;
-    if(nw){DB.products.push(rec);if(num(f.open)>0){addStock(rec,S.branchId,num(f.open),{exp:f.oexp,no:f.ono,ref:'Opening'});addMove({type:'opening',pid:rec.id,qty:num(f.open),ref:'Opening'})}}
+    if(rec.costUp&&num(rec.price)!==oldPrice)delete rec.costUp;
+    if(varsOn()){const keep=[];vpairs.forEach(x=>{let v=x.r.id&&(rec.variants||[]).find(y=>y.id===x.r.id);if(!v){v={id:uid(),stock:{}};rec.vseq=(rec.vseq||(rec.variants||[]).length)+1;v.sku=rec.sku+'-'+rec.vseq}v.name=x.r.name.trim();v.barcode=(x.r.barcode||'').trim();x.v=v;keep.push(v)});rec.variants=keep}
+    if(nw){DB.products.push(rec);if(!(rec.variants&&rec.variants.length)&&num(f.open)>0){addStock(rec,S.branchId,num(f.open),{exp:f.oexp,no:f.ono,ref:'Opening'});addMove({type:'opening',pid:rec.id,qty:num(f.open),ref:'Opening'})}}
+    if(varsOn()&&rec.trackStock!==false)vpairs.forEach(x=>{const d=r3(num(x.r.q)-num(x.r.q0));if(!d)return;const un=unassigned(rec),fromUn=d>0?Math.min(d,Math.max(0,un)):0;
+      addStock(rec,S.branchId,d,{vid:x.v.id,pd:r3(d-fromUn)});addMove({type:nw?'opening':'adjust',pid:rec.id,vid:x.v.id,qty:d,ref:nw?'Opening':'Edit variant stock'})});
     save();closeM(m);toast(t('Saved'),'ok');renderView();
   };
 }
@@ -1770,16 +1918,16 @@ ACT.prodDel=async el=>{
   if(await confirmBox(t('Delete "{n}"?',{n:p.name}),{danger:true,ok:'Delete'})){DB.products=DB.products.filter(x=>x.id!==p.id);DB.movements=DB.movements.filter(m=>m.pid!==p.id);save();renderView()}
 };
 ACT.prodAdj=el=>{
-  const p=prod(el.dataset.id),cs=stockOf(p);
-  const m=modal(t('Adjust stock'),`<div class="mb"><b>${esc(p.name)}</b><div class="mut">${esc(bname(S.branchId))} · ${t('Current stock')}: <b>${nf(cs)}</b> ${esc(p.unit||'')}</div></div>
+  const p=prod(el.dataset.id);let vid=hasVars(p)?p.variants[0].id:'',cs=availOf(p,vid);
+  const m=modal(t('Adjust stock'),`<div class="mb"><b>${esc(p.name)}</b><div class="mut">${esc(bname(S.branchId))} · ${t('Current stock')}: <b id="adjCs">${nf(cs)}</b> ${esc(p.unit||'')}</div></div>${hasVars(p)?fld(t('Variant'),`<select id="adjV">${p.variants.map(v=>`<option value="${v.id}">${esc(v.name)} (${nf(vStock(p,v.id))})</option>`).join('')}</select>`):''}
     <div class="grid2">${fld(t('Mode'),`<select name="mode">${opts([['set',t('Set to exact count')],['add',t('Add (+)')],['sub',t('Remove (−)')]],'set')}</select>`)}${fld(t('Quantity'),`<input name="qty" type="number" step="any" min="0" value="${cs}">`)}</div>
     ${fld(t('Reason'),`<select name="reason">${['Stock count','Damaged','Expired','Lost / stolen','Found','Other'].map(r=>`<option value="${r}">${t(r)}</option>`).join('')}</select>`)}${fld(t('Note'),inp('note'))}
     <div class="grid2" id="adjBt">${fld(t('Expiry date (optional)'),`<input name="bexp" type="date">`)}${fld(t('Batch no. (optional)'),inp('bno'))}</div><div class="mut sm">${t('Expiry and batch apply only when stock is added. Removing stock takes the earliest-expiry batch first.')}</div>
     <div class="mut sm" id="adjPrev"></div>`,`<button class="btn" data-close>${t('Cancel')}</button><button class="btn pri" id="adjOk">${t('Apply')}</button>`,'sm');
   const delta=()=>{const f=getForm(m),q=num(f.qty);return f.mode==='set'?q-cs:f.mode==='add'?q:-q};
   const prev=()=>{const d=delta();$('#adjPrev',m).textContent=t('New stock')+': '+nf(cs+d)+' ('+(d>=0?'+':'')+nf(d)+')'};
-  m.addEventListener('input',prev);m.addEventListener('change',e=>{if(e.target.name==='mode'){m.querySelector('[name=qty]').value=e.target.value==='set'?cs:0}prev()});prev();
-  $('#adjOk',m).onclick=()=>{const d=delta();if(!d){closeM(m);return}const f=getForm(m);addStock(p,S.branchId,d,d>0?{exp:f.bexp,no:f.bno,ref:'adjust'}:undefined);addMove({type:'adjust',pid:p.id,qty:d,ref:f.reason,note:f.note});save();closeM(m);toast(t('Stock adjusted'),'ok');renderView()};
+  m.addEventListener('input',prev);m.addEventListener('change',e=>{if(e.target.id==='adjV'){vid=e.target.value;cs=availOf(p,vid);$('#adjCs',m).textContent=nf(cs);m.querySelector('[name=qty]').value=m.querySelector('[name=mode]').value==='set'?cs:0}if(e.target.name==='mode'){m.querySelector('[name=qty]').value=e.target.value==='set'?cs:0}prev()});prev();
+  $('#adjOk',m).onclick=()=>{const d=delta();if(!d){closeM(m);return}const f=getForm(m);addStock(p,S.branchId,d,d>0?{exp:f.bexp,no:f.bno,ref:'adjust',vid}:{vid});addMove({type:'adjust',pid:p.id,...(vid?{vid}:{}),qty:d,ref:f.reason,note:f.note});save();closeM(m);toast(t('Stock adjusted'),'ok');renderView()};
 };
 ACT.catMgr=()=>{
   function body(){return `<div class="row mb"><input id="cn" placeholder="${t('New category name')}"><button class="btn pri" id="ca">${ic('plus')}</button></div>
@@ -1789,7 +1937,15 @@ ACT.catMgr=()=>{
     $('#ca',m).onclick=()=>{const n=$('#cn',m).value.trim();if(!n)return;if(DB.categories.some(c=>c.name.toLowerCase()===n.toLowerCase()))return toast(t('Already exists'),'warn');DB.categories.push({id:uid(),name:n});save();draw()};
     $('#cn',m).addEventListener('keydown',e=>{if(e.key==='Enter')$('#ca',m).click()});
     $$('[data-cn]',m).forEach(i=>i.onchange=()=>{const c=cat(i.dataset.cn);if(i.value.trim()){c.name=i.value.trim();save()}});
-    $$('[data-cd]',m).forEach(b=>b.onclick=()=>{const id=b.dataset.cd;if(DB.products.some(p=>p.categoryId===id))return toast(t('Category is in use'),'err');DB.categories=DB.categories.filter(c=>c.id!==id);save();draw()});};
+    $$('[data-cd]',m).forEach(b=>b.onclick=async()=>{const id=b.dataset.cd,c=cat(id),n=DB.products.filter(p=>p.categoryId===id).length;
+      let to='';
+      if(n){to=await new Promise(res=>{const o=DB.categories.filter(x=>x.id!==id);
+        const m2=modal(t('Delete category'),`<p><b>${esc(c.name)}</b> — ${n} ${t('products')}</p>${fld(t('Move these products to'),`<select name="to"><option value="">${t('No category')}</option>${o.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select>`)}`,`<button class="btn" id="cdN">${t('Cancel')}</button><button class="btn danger" id="cdY">${t('Delete category')}</button>`,'sm');
+        $('#cdN',m2).onclick=()=>{m2.remove();res(null)};$('#cdY',m2).onclick=()=>{const v=m2.querySelector('[name=to]').value;m2.remove();res(v)}});
+        if(to===null)return;
+      }else if(!await confirmBox(t('Delete "{n}"?',{n:c.name}),{danger:true,ok:'Delete'}))return;
+      DB.products.forEach(p=>{if(p.categoryId===id){p.categoryId=to;p.updatedAt=now()}});
+      DB.categories=DB.categories.filter(x=>x.id!==id);save();draw()});};
   draw();m.querySelector('[data-close]').addEventListener('click',()=>{if(S.route==='inventory')renderView()});
 };
 ACT.transfer=()=>{
@@ -1799,28 +1955,48 @@ ACT.transfer=()=>{
   const m=modal(t('Stock transfer'),`<div class="grid2">${fld(t('From'),`<input value="${esc(bname(S.branchId))}" disabled>`)}${fld(t('To'),`<select name="to">${opts(others.map(b=>[b.id,b.name]),'')}</select>`)}</div>
     ${fld(t('Add product'),`<input id="trq" placeholder="${t('Search or scan…')}">`)}<div class="tw"><table><thead><tr><th>${t('Product')}</th><th class="r">${t('Available')}</th><th class="r" style="width:110px">${t('Qty')} (${t('main unit')})</th><th></th></tr></thead><tbody id="trL"></tbody></table></div>${fld(t('Note'),inp('note'),'mt')}`,
     `<button class="btn" data-close>${t('Cancel')}</button><button class="btn pri" id="trOk">${t('Transfer')}</button>`,'md');
-  const draw=()=>{$('#trL',m).innerHTML=lines.map((l,i)=>`<tr><td>${esc(prod(l.pid).name)}</td><td class="r">${nf(stockOf(prod(l.pid)))}</td><td><input type="number" step="any" min="0" value="${l.qty}" data-q="${i}"></td><td><button class="btn sm danger" data-x="${i}">${ic('x')}</button></td></tr>`).join('')||`<tr><td colspan="4" class="empty">${t('No items')}</td></tr>`;
+  const draw=()=>{$('#trL',m).innerHTML=lines.map((l,i)=>`<tr><td>${esc(vName(prod(l.pid),l.vid))}</td><td class="r">${nf(availOf(prod(l.pid),l.vid))}</td><td><input type="number" step="any" min="0" value="${l.qty}" data-q="${i}"></td><td><button class="btn sm danger" data-x="${i}">${ic('x')}</button></td></tr>`).join('')||`<tr><td colspan="4" class="empty">${t('No items')}</td></tr>`;
     $$('[data-q]',m).forEach(i=>i.oninput=()=>lines[+i.dataset.q].qty=num(i.value));$$('[data-x]',m).forEach(b=>b.onclick=()=>{lines.splice(+b.dataset.x,1);draw()})};
-  picker($('#trq',m),p=>{if(p.trackStock===false)return toast(t('This product does not track stock'),'warn');const l=lines.find(x=>x.pid===p.id);if(l)l.qty++;else lines.push({pid:p.id,qty:1});draw()});draw();
+  picker($('#trq',m),(p,vid)=>{if(p.trackStock===false)return toast(t('This product does not track stock'),'warn');const l=lines.find(x=>x.pid===p.id&&(x.vid||'')===(vid||''));if(l)l.qty++;else lines.push({pid:p.id,...(vid?{vid}:{}),qty:1});draw()});draw();
   $('#trOk',m).onclick=()=>{
     const f=getForm(m),L=lines.filter(l=>l.qty>0);if(!L.length)return toast(t('Add at least one item'),'err');
-    for(const l of L){const p=prod(l.pid);if(!DB.settings.allowNegative&&l.qty>stockOf(p))return toast(t('Not enough stock: {n} available',{n:nf(stockOf(p))})+' — '+p.name,'err')}
+    for(const l of L){const p=prod(l.pid);if(!DB.settings.allowNegative&&l.qty>availOf(p,l.vid))return toast(t('Not enough stock: {n} available',{n:nf(availOf(p,l.vid))})+' — '+vName(p,l.vid),'err')}
     const no=nextNo('TR-','transfer');
-    L.forEach(l=>{const p=prod(l.pid);addStock(p,S.branchId,-l.qty);const al=lastAlloc;addStock(p,f.to,l.qty,{bt:al,copy:true});
-      addMove({type:'transfer_out',pid:p.id,qty:-l.qty,ref:no+' → '+bname(f.to),note:f.note});addMove({type:'transfer_in',pid:p.id,qty:l.qty,ref:no+' ← '+bname(S.branchId),note:f.note,branchId:f.to})});
-    DB.transfers.push({id:uid(),no,from:S.branchId,to:f.to,date:now(),items:L,userId:S.user.id,note:f.note});
+    L.forEach(l=>{const p=prod(l.pid),vx=l.vid?{vid:l.vid}:{};addStock(p,S.branchId,-l.qty,vx);const al=lastAlloc;addStock(p,f.to,l.qty,{bt:al,copy:true,...vx});
+      addMove({type:'transfer_out',pid:p.id,...vx,qty:-l.qty,ref:no+' → '+bname(f.to),note:f.note});addMove({type:'transfer_in',pid:p.id,...vx,qty:l.qty,ref:no+' ← '+bname(S.branchId),note:f.note,branchId:f.to})});
+    DB.transfers.push({id:uid(),no,from:S.branchId,to:f.to,date:now(),items:L.map(l=>({pid:l.pid,...(l.vid?{vid:l.vid}:{}),qty:l.qty,name:vName(prod(l.pid),l.vid),unit:prod(l.pid).unit||''})),userId:S.user.id,note:f.note});
     save();closeM(m);toast(t('Transfer completed')+' '+no,'ok');renderView();
   };
 };
 const MOVE_TYPES={sale:'Sale',void:'Void sale',purchase:'Purchase',purchase_cancel:'Purchase cancelled',adjust:'Adjustment',transfer_in:'Transfer in',transfer_out:'Transfer out',opening:'Opening stock',import:'CSV import'};
+const brn=id=>(branch(id)||{name:'—'}).name;
+function invTransfers(head){
+  const f=S.inv;if(!f.tf){const r=presetRange('month');f.tf={from:r[0],to:r[1],q:''}}const T=f.tf,mine=myBranches().map(b=>b.id);
+  let L=DB.transfers.filter(x=>(mine.includes(x.from)||mine.includes(x.to))&&dkey(x.date)>=T.from&&dkey(x.date)<=T.to);
+  if(T.q){const q=T.q.toLowerCase();L=L.filter(x=>x.no.toLowerCase().includes(q)||(x.note||'').toLowerCase().includes(q)||brn(x.from).toLowerCase().includes(q)||brn(x.to).toLowerCase().includes(q)||x.items.some(i=>((i.name||(prod(i.pid)||{}).name)||'').toLowerCase().includes(q)))}
+  L.sort((a,b)=>b.date.localeCompare(a.date));
+  main().innerHTML=head+`<div class="toolbar"><input type="date" id="tf1" value="${T.from}"><span class="mut">→</span><input type="date" id="tf2" value="${T.to}"><input id="tfq" class="grow" placeholder="${t('Search transfer no., branch, product or note')}" value="${esc(T.q)}"></div>
+  <div class="tw"><table><thead><tr><th>${t('Transfer no.')}</th><th>${t('Date')}</th><th>${t('From')}</th><th>${t('To')}</th><th class="r">${t('Items')}</th><th class="r">${t('Qty')}</th><th>${t('User')}</th><th></th></tr></thead><tbody>
+  ${L.map(x=>`<tr><td class="b">${esc(x.no)}</td><td>${fdt(x.date)}</td><td>${esc(brn(x.from))}</td><td>${esc(brn(x.to))}</td><td class="r">${x.items.length}</td><td class="r">${nf(sum(x.items,i=>i.qty))}</td><td>${esc((user(x.userId)||{}).name||'')}</td><td class="r"><button class="btn sm" data-act="trView" data-id="${x.id}">${ic('eye')}</button></td></tr>`).join('')||`<tr><td colspan="8" class="empty">${t('No transfers found')}</td></tr>`}</tbody></table></div>`;
+  $('#tf1').onchange=e=>{T.from=e.target.value;VIEWS.inventory()};$('#tf2').onchange=e=>{T.to=e.target.value;VIEWS.inventory()};$('#tfq').onchange=e=>{T.q=e.target.value;VIEWS.inventory()};
+}
+ACT.trView=el=>{
+  const x=DB.transfers.find(y=>y.id===el.dataset.id);if(!x)return;
+  const nm=i=>i.name||(prod(i.pid)||{}).name||'(deleted)',un=i=>i.unit||(prod(i.pid)||{}).unit||'';
+  const tbl=`<table><thead><tr><th>${t('Product')}</th><th class="r">${t('Qty')}</th></tr></thead><tbody>${x.items.map(i=>`<tr><td>${esc(nm(i))}</td><td class="r">${nf(i.qty)} ${esc(un(i))}</td></tr>`).join('')}</tbody><tfoot><tr><td class="r b">${t('Total')}</td><td class="r b">${nf(sum(x.items,i=>i.qty))}</td></tr></tfoot></table>`;
+  const head=`<div class="row wrap mb"><span class="sp"><b>${esc(brn(x.from))}</b> → <b>${esc(brn(x.to))}</b></span><span class="mut">${fdt(x.date)} · ${esc((user(x.userId)||{}).name||'')}</span></div>${x.note?`<div class="mut mb">${esc(x.note)}</div>`:''}`;
+  const m=modal(esc(x.no),head+`<div class="tw">${tbl}</div>`,`<button class="btn" id="trP">${ic('print')} ${t('Print')}</button><button class="btn pri" data-close>${t('Close')}</button>`,'sm');
+  $('#trP',m).onclick=()=>printHTML(`<div style="font-family:sans-serif;padding:16px"><h2 style="margin:0">${esc(DB.settings.storeName)}</h2><h3>${t('Stock transfer')} ${esc(x.no)}</h3>${head}${tbl.replace('<table>','<table style="width:100%;border-collapse:collapse" border="1" cellpadding="6">')}<div style="margin-top:40px;display:flex;justify-content:space-between"><span>${t('Sent by')}: ________</span><span>${t('Received by')}: ________</span></div></div>`,'@page{size:A5;margin:10mm}');
+};
+const allStoresCell=p=>{const B=myBranches(),tot=sum(B,b=>stockOf(p,b.id));return `<b>${nf(tot)}</b> <span class="mut sm">${esc(p.unit||'')}</span><div class="mut sm" style="line-height:1.5">${B.map(b=>esc(b.name)+': '+nf(stockOf(p,b.id))).join('<br>')}</div>`};
 function invMoves(head){
   const f=S.inv;
   let L=DB.movements.filter(x=>x.branchId===S.branchId&&(!f.mtype||x.type===f.mtype));
-  if(f.mq){const q=f.mq.toLowerCase();L=L.filter(x=>((prod(x.pid)||{}).name||'').toLowerCase().includes(q)||(x.ref||'').toLowerCase().includes(q))}
+  if(f.mq){const q=f.mq.toLowerCase();L=L.filter(x=>(prod(x.pid)?vName(prod(x.pid),x.vid):'').toLowerCase().includes(q)||(x.ref||'').toLowerCase().includes(q))}
   L=L.sort((a,b)=>b.date.localeCompare(a.date)).slice(0,400);
   main().innerHTML=head+`<div class="toolbar"><input id="mq" class="grow" placeholder="${t('Search product or reference')}" value="${esc(f.mq)}"><select id="mt">${`<option value="">${t('All types')}</option>`+Object.entries(MOVE_TYPES).map(([k,v])=>`<option value="${k}" ${f.mtype===k?'selected':''}>${t(v)}</option>`).join('')}</select></div>
   <div class="tw"><table><thead><tr><th>${t('Date')}</th><th>${t('Product')}</th><th>${t('Type')}</th><th class="r">${t('Qty')}</th><th>${t('Reference')}</th><th>${t('User')}</th></tr></thead><tbody>
-  ${L.map(x=>`<tr><td>${fdt(x.date)}</td><td>${esc((prod(x.pid)||{name:'(deleted)'}).name)}</td><td><span class="badge ${x.qty<0?'warn':'ok'}">${t(MOVE_TYPES[x.type]||x.type)}</span></td><td class="r b ${x.qty<0?'err':'ok'}">${x.qty>0?'+':''}${nf(x.qty)}</td><td class="w">${esc(x.ref||'')}${x.note?' <span class="mut">· '+esc(x.note)+'</span>':''}</td><td>${esc((user(x.userId)||{}).name||'')}</td></tr>`).join('')||`<tr><td colspan="6" class="empty">${t('No movements')}</td></tr>`}</tbody></table></div>`;
+  ${L.map(x=>`<tr><td>${fdt(x.date)}</td><td>${esc(prod(x.pid)?vName(prod(x.pid),x.vid):'(deleted)')}</td><td><span class="badge ${x.qty<0?'warn':'ok'}">${t(MOVE_TYPES[x.type]||x.type)}</span></td><td class="r b ${x.qty<0?'err':'ok'}">${x.qty>0?'+':''}${nf(x.qty)}</td><td class="w">${esc(x.ref||'')}${x.note?' <span class="mut">· '+esc(x.note)+'</span>':''}</td><td>${esc((user(x.userId)||{}).name||'')}</td></tr>`).join('')||`<tr><td colspan="6" class="empty">${t('No movements')}</td></tr>`}</tbody></table></div>`;
   $('#mq').onchange=e=>{f.mq=e.target.value;VIEWS.inventory()};$('#mt').onchange=e=>{f.mtype=e.target.value;VIEWS.inventory()};
 }
 const PROD_COLS=['sku','barcode','name','category','unit','cost','price','minStock','trackStock','stock'],PROD_W=[12,18,30,16,10,10,10,10,11,10];
@@ -1887,7 +2063,7 @@ ACT.supEdit=async el=>{await supModal(supplier(el.dataset.id));renderView()};
 ACT.supDel=async el=>{const id=el.dataset.id;if(DB.purchases.some(p=>p.supplierId===id))return toast(t('Supplier has purchases and cannot be deleted'),'err');if(await confirmBox(t('Delete supplier?'),{danger:true,ok:'Delete'})){DB.suppliers=DB.suppliers.filter(s=>s.id!==id);save();renderView()}};
 
 ACT.purNew=()=>{
-  const lines=[];
+  const lines=(S.purPre||[]).map(x=>{const p=prod(x.pid);return p?{pid:p.id,...(x.vid?{vid:x.vid}:{}),name:x.vid?vName(p,x.vid):p.name,qty:x.qty,cost:p.cost,unit:p.unit,factor:1,batch:'',exp:''}:null}).filter(Boolean);S.purPre=null;
   const m=modal(t('New purchase'),`<div class="grid3">${fld(t('Supplier'),`<div class="row"><select name="sup" class="sp"><option value="">—</option>${opts(DB.suppliers.map(s=>[s.id,s.name]),'')}</select><button class="btn sm" id="addSup" type="button">${ic('plus')}</button></div>`)}${fld(t('Date'),`<input type="date" name="date" value="${dkey()}">`)}${fld(t('Supplier invoice no.'),inp('ref'))}</div>
     ${fld(t('Add product'),`<input id="pq2" placeholder="${t('Search or scan…')}">`)}
     <div class="tw"><table><thead><tr><th>${t('Product')}</th><th class="r" style="width:130px">${t('Qty')}</th><th class="r" style="width:130px">${t('Unit cost')}</th><th class="r">${t('Amount')}</th><th></th></tr></thead><tbody id="pL"></tbody><tfoot><tr><td colspan="3" class="r">${t('Total')}</td><td class="r" id="pT">0</td><td></td></tr></tfoot></table></div>
@@ -1901,12 +2077,12 @@ ACT.purNew=()=>{
     $$('[data-pu]',m).forEach(sel=>sel.onchange=()=>{const l=lines[+sel.dataset.pu],pp=prod(l.pid);l.unit=sel.value;l.factor=facOf(pp,l.unit);l.cost=Math.round(num(pp.cost)*l.factor*100)/100;draw()});
     $$('[data-x]',m).forEach(b=>b.onclick=()=>{lines.splice(+b.dataset.x,1);draw()})};
   const upd=i=>{$('#pa'+i,m).textContent=money(lines[i].qty*lines[i].cost);$('#pT',m).textContent=money(tot())};
-  picker($('#pq2',m),p=>{const l=lines.find(x=>x.pid===p.id);if(l)l.qty++;else lines.push({pid:p.id,name:p.name,qty:1,cost:p.cost,unit:p.unit,factor:1,batch:'',exp:''});draw()});draw();
+  picker($('#pq2',m),(p,vid)=>{const l=lines.find(x=>x.pid===p.id&&(x.vid||'')===(vid||''));if(l)l.qty++;else lines.push({pid:p.id,...(vid?{vid}:{}),name:vid?vName(p,vid):p.name,qty:1,cost:p.cost,unit:p.unit,factor:1,batch:'',exp:''});draw()});draw();
   $('#addSup',m).onclick=async()=>{const r=await supModal();if(r){const s=m.querySelector('[name=sup]');s.innerHTML='<option value="">—</option>'+opts(DB.suppliers.map(x=>[x.id,x.name]),r.id)}};
   const go=receive=>{
     const f=getForm(m),L=lines.filter(l=>l.qty>0);if(!L.length)return toast(t('Add at least one item'),'err');
     const total=tot(),paid=Math.min(rnd(f.paid),total);
-    const b=branch(S.branchId),po={id:uid(),no:nextNo('PO-'+b.code+'-','po:'+b.id),branchId:b.id,supplierId:f.sup,date:new Date(f.date+'T'+ftime(new Date())).toISOString(),ref:f.ref,items:L.map(l=>({pid:l.pid,name:l.name,qty:l.qty,cost:l.cost,unit:l.unit,factor:l.factor||1,batch:l.batch||'',exp:l.exp||''})),total,paid:0,payments:[],status:'ordered',note:f.note,userId:S.user.id};
+    const b=branch(S.branchId),po={id:uid(),no:nextNo('PO-'+b.code+'-','po:'+b.id),branchId:b.id,supplierId:f.sup,date:new Date(f.date+'T'+ftime(new Date())).toISOString(),ref:f.ref,items:L.map(l=>({pid:l.pid,...(l.vid?{vid:l.vid}:{}),name:l.name,qty:l.qty,cost:l.cost,unit:l.unit,factor:l.factor||1,batch:l.batch||'',exp:l.exp||''})),total,paid:0,payments:[],status:'ordered',note:f.note,userId:S.user.id};
     DB.purchases.push(po);
     if(paid>0)recordPurPayment(po,paid,f.method);
     if(receive)receivePO(po);
@@ -1919,8 +2095,10 @@ function recordPurPayment(po,amount,method){
   if(method==='Cash'){const sh=curShift(po.branchId);if(sh)DB.cashEntries.push({id:uid(),branchId:po.branchId,shiftId:sh.id,date:now(),type:'out',kind:'purchase',amount,reason:'Purchase '+po.no,userId:S.user.id})}
 }
 function receivePO(po){
-  po.items.forEach(i=>{const p=prod(i.pid);if(!p)return;const fc=i.factor||1,bq=r3(i.qty*fc);if(p.trackStock!==false){addStock(p,po.branchId,bq,{exp:i.exp,no:i.batch,ref:po.no});if(lastAlloc.length&&(i.exp||i.batch))i.bid=lastAlloc[0].id;addMove({type:'purchase',pid:p.id,qty:bq,ref:po.no,branchId:po.branchId})}p.cost=Math.round(i.cost/fc*1e4)/1e4;p.updatedAt=now()});
+  const costUps=[];
+  po.items.forEach(i=>{const p=prod(i.pid);if(!p)return;const fc=i.factor||1,bq=r3(i.qty*fc);if(p.trackStock!==false){addStock(p,po.branchId,bq,{exp:i.exp,no:i.batch,ref:po.no,vid:i.vid});if(lastAlloc.length&&(i.exp||i.batch))i.bid=lastAlloc[0].id;addMove({type:'purchase',pid:p.id,...(i.vid?{vid:i.vid}:{}),qty:bq,ref:po.no,branchId:po.branchId})}{const nc=Math.round(i.cost/fc*1e4)/1e4,oc=num(p.cost);if(oc>0&&nc>oc+1e-9){p.costUp={from:oc,to:nc,date:now()};costUps.push(p.name)}else if(nc<=oc)delete p.costUp;p.cost=nc}p.updatedAt=now()});
   po.status='received';po.receivedAt=now();
+  if(costUps.length)setTimeout(()=>toast('📈 '+t('Buying price went up: {n}. Check the selling price.',{n:costUps.slice(0,3).join(', ')+(costUps.length>3?' …':'')}),'warn'),400);
 }
 ACT.purView=el=>{
   const p=DB.purchases.find(x=>x.id===el.dataset.id);if(!p)return;
@@ -1935,7 +2113,7 @@ ACT.purView=el=>{
     recordPurPayment(p,a,'Cash');save();closeM(m);renderView();toast(t('Payment recorded (cash)'),'ok')};
   const can2=$('#vCan',m);if(can2)can2.onclick=async()=>{
     if(!await confirmBox(t('Cancel this purchase? Received stock will be removed again.'),{danger:true}))return;
-    if(p.status==='received')p.items.forEach(i=>{const pr=prod(i.pid);if(pr&&pr.trackStock!==false){const bq=r3(i.qty*(i.factor||1));addStock(pr,p.branchId,-bq,{bid:i.bid});addMove({type:'purchase_cancel',pid:pr.id,qty:-bq,ref:p.no,branchId:p.branchId})}});
+    if(p.status==='received')p.items.forEach(i=>{const pr=prod(i.pid);if(pr&&pr.trackStock!==false){const bq=r3(i.qty*(i.factor||1));addStock(pr,p.branchId,-bq,{bid:i.bid,vid:i.vid});addMove({type:'purchase_cancel',pid:pr.id,...(i.vid?{vid:i.vid}:{}),qty:-bq,ref:p.no,branchId:p.branchId})}});
     p.status='cancelled';save();closeM(m);renderView()};
   $('#vPr',m).onclick=()=>printHTML(`<div class="docp"><h2>${esc(DB.settings.storeName)} — ${t('Purchase order')} ${esc(p.no)}</h2><p>${fdate(p.date)} · ${esc((supplier(p.supplierId)||{}).name||'')}${(supplier(p.supplierId)||{}).city?' ('+esc(supplier(p.supplierId).city)+')':''} ${multiBr()?' · '+esc(bname(p.branchId)):''}</p><table style="width:100%;border-collapse:collapse"><thead><tr><th align=left>${t('Product')}</th><th align=right>${t('Qty')}</th><th align=right>${t('Unit cost')}</th><th align=right>${t('Amount')}</th></tr></thead><tbody>${p.items.map(i=>`<tr><td>${esc(i.name)}</td><td align=right>${qtyU(i)}</td><td align=right>${money(i.cost)}</td><td align=right>${money(i.qty*i.cost)}</td></tr>`).join('')}</tbody></table><h3 style="text-align:right">${t('Total')}: ${money(p.total)}</h3></div>`,'@page{size:A4;margin:8mm}');
 };
@@ -2132,13 +2310,13 @@ function buildReport0(f){
   const col=(h,ty='s',sm=false)=>({h:t(h),ty,sum:sm});
   switch(f.type){
     case 'sales':{
-      return {cols:[col('Date'),col('Time'),col('Receipt no.'),col('Branch'),col('Cashier'),col('Channel'),col('Items'),col('Discount','m',1),col('Tax','m',1),col('Total','m',1),col('Payment'),col('Profit','m',1)],
-        rows:[...S0].sort((a,b)=>a.date.localeCompare(b.date)).map(x=>[dkey(x.date),ftime(x.date),x.no,bname(x.branchId),(user(x.userId)||{}).name||'',CHN(saleChan(x)),x.items.map(i=>i.name+' ×'+nf(i.qty)).join(', '),x.discount,x.tax,x.total,x.payments.map(q=>PAYNAME(q.method)+' '+nf(q.amount)).join(' + '),saleProfit(x)])}}
+      return {cols:[col('Date'),col('Time'),col('Receipt no.'),col('Branch'),col('Cashier'),col('Channel'),col('Items'),col('Discount','m',1),col('Tax','m',1),col('Total','m',1),col('Payment'),col('Profit','m',1),col('Delivery code'),col('Internal note')],
+        rows:[...S0].sort((a,b)=>a.date.localeCompare(b.date)).map(x=>[dkey(x.date),ftime(x.date),x.no,bname(x.branchId),(user(x.userId)||{}).name||'',CHN(saleChan(x)),x.items.map(i=>i.name+' ×'+nf(i.qty)).join(', '),x.discount,x.tax,x.total,x.payments.map(q=>PAYNAME(q.method)+' '+nf(q.amount)).join(' + '),saleProfit(x),(x.cod||{}).code||'',x.inote||''])}}
     case 'daily':{const g=groupBy(S0,s=>dkey(s.date));
       return {cols:[col('Date'),col('Orders','n',1),col('Sales','m',1),col('Discount','m',1),col('Tax','m',1),col('Cost','m',1),col('Profit','m',1)],
         rows:Object.keys(g).sort().map(k=>[k,g[k].length,sum(g[k],s=>s.total),sum(g[k],s=>s.discount),sum(g[k],s=>s.tax),sum(g[k],saleCost),sum(g[k],saleProfit)]),
         chart:Object.keys(g).sort().slice(-31).map(k=>({label:k.slice(8)+'/'+k.slice(5,7),value:sum(g[k],s=>s.total)}))}}
-    case 'product':{const g=groupBy(lines,i=>i.pid||i.name);
+    case 'product':{const g=groupBy(lines,i=>i.pid?i.pid+'|'+(i.vid||''):i.name);
       return {cols:[col('Product'),col('Qty','n',1),col('Sales','m',1),col('Cost','m',1),col('Profit','m',1)],
         rows:Object.values(g).map(a=>[a[0].name,sum(a,i=>i.qty*(i.factor||1)),sum(a,i=>i.qty*i.price),sum(a,i=>i.qty*(i.cost||0)),sum(a,i=>i.qty*(i.price-(i.cost||0)))]).sort((a,b)=>b[2]-a[2])}}
     case 'category':{const g=groupBy(lines,i=>((prod(i.pid)&&cat(prod(i.pid).categoryId))||{name:'—'}).name);
@@ -2155,8 +2333,8 @@ function buildReport0(f){
       ks.forEach(k=>{const by=groupBy(g[k].flatMap(s=>s.payments),p=>p.method);Object.entries(by).sort((a,b)=>sum(b[1],p=>p.amount)-sum(a[1],p=>p.amount)).forEach(([m,a])=>rows.push([CHN(k),PAYNAME(m),a.length,sum(a,p=>p.amount)]))});
       return {cols:[col('Channel'),col('Payment method'),col('Transactions','n',1),col('Amount','m',1)],rows}}
     case 'cod':{const L=DB.sales.filter(x=>x.status==='cod'&&sc.includes(x.branchId)&&inR(x.date)&&(!f.channel||f.channel==='all'||saleChan(x)===f.channel));
-      return {cols:[col('Date'),col('Receipt no.'),col('Branch'),col('Customer'),col('Phone'),col('Address'),col('Channel'),col('Items'),col('Amount','m',1),col('Days waiting','n')],
-        rows:L.sort((a,b)=>a.date.localeCompare(b.date)).map(x=>[dkey(x.date),x.no,bname(x.branchId),(x.cod||{}).name||'',(x.cod||{}).phone||'',(x.cod||{}).address||'',CHN(saleChan(x)),x.items.map(i=>i.name+' ×'+nf(i.qty)).join(', '),x.total,Math.max(0,Math.floor((Date.now()-Date.parse(x.date))/864e5))])}}
+      return {cols:[col('Date'),col('Receipt no.'),col('Branch'),col('Customer'),col('Phone'),col('Address'),col('Channel'),col('Items'),col('Amount','m',1),col('Days waiting','n'),col('Delivery code'),col('Delivery status'),col('Courier'),col('Internal note')],
+        rows:L.sort((a,b)=>a.date.localeCompare(b.date)).map(x=>[dkey(x.date),x.no,bname(x.branchId),(x.cod||{}).name||'',(x.cod||{}).phone||'',(x.cod||{}).address||'',CHN(saleChan(x)),x.items.map(i=>i.name+' ×'+nf(i.qty)).join(', '),x.total,Math.max(0,Math.floor((Date.now()-Date.parse(x.date))/864e5)),(x.cod||{}).code||'',dsLabel((x.cod||{}).dstatus||'pending'),(x.cod||{}).courier||'',x.inote||''])}}
     case 'pricetype':{const g=groupBy(S0,x=>x.priceMode==='wholesale'?'Wholesale':'Retail');
       return {cols:[col('Type'),col('Orders','n',1),col('Sales','m',1),col('Discount','m',1),col('Cost','m',1),col('Profit','m',1)],
         rows:['Retail','Wholesale'].filter(k=>g[k]).map(k=>[t(k),g[k].length,sum(g[k],x=>x.total),sum(g[k],x=>x.discount),sum(g[k],saleCost),sum(g[k],saleProfit)])}}
@@ -2189,6 +2367,135 @@ function buildReport0(f){
   }
 }
 function repCell(c,v){return c.ty==='m'?money(v):c.ty==='n'?nf(v):esc(v)}
+/* =====================================================================
+   INSIGHTS (offline, computed in-app — no AI / no internet)
+   ===================================================================== */
+S.ins=S.ins||{q:'top',p:'month',branch:'all',dd:60,by:'category'};
+const INS_PER=[['today','Today'],['week','Last 7 days'],['month','This month'],['lastmonth','Last month'],['year','This year']];
+const INS_Q=[['top','🏆','Best sellers'],['profit','💰','Most profitable'],['slow','🐌','Slow movers & expiry'],['pl','📒','Profit & loss'],['reorder','🛒','Reorder suggestions'],['compare','📊','Compare periods'],['by','🧮','Profit breakdown'],['cust','👥','Customers'],['cost','📈','Cost changes'],['daily','🗓','Daily summary']];
+function insRange(p){const d=new Date(),y=d.getFullYear(),mo=d.getMonth(),k=x=>dkey(x);
+  if(p==='today')return [k(d),k(d)];
+  if(p==='week'){const a=new Date();a.setDate(a.getDate()-6);return [k(a),k(d)]}
+  if(p==='month')return [k(new Date(y,mo,1)),k(d)];
+  if(p==='lastmonth')return [k(new Date(y,mo-1,1)),k(new Date(y,mo,0))];
+  return [k(new Date(y,0,1)),k(d)]}
+function insPrev(p){const d=new Date(),y=d.getFullYear(),mo=d.getMonth(),k=x=>dkey(x);
+  if(p==='today'){const x=new Date();x.setDate(x.getDate()-1);return [k(x),k(x)]}
+  if(p==='week'){const a=new Date(),b=new Date();a.setDate(a.getDate()-13);b.setDate(b.getDate()-7);return [k(a),k(b)]}
+  if(p==='month'){const last=new Date(y,mo,0).getDate();return [k(new Date(y,mo-1,1)),k(new Date(y,mo-1,Math.min(d.getDate(),last)))]}
+  if(p==='lastmonth')return [k(new Date(y,mo-2,1)),k(new Date(y,mo-1,0))];
+  return [k(new Date(y-1,0,1)),k(new Date(y-1,mo,d.getDate()))]}
+const insIds=()=>S.ins.branch==='all'?myBranches().map(b=>b.id):[S.ins.branch];
+const insSales=(r,ids)=>DB.sales.filter(s=>s.status==='completed'&&ids.includes(s.branchId)&&dkey(s.date)>=r[0]&&dkey(s.date)<=r[1]);
+const insLines=L=>L.flatMap(s=>s.items.map(i=>({s,i})));
+const insKey=i=>i.pid?i.pid+'|'+(i.vid||''):i.name;
+function insAgg(L,keyf=l=>insKey(l.i)){const g={};insLines(L).forEach(l=>{const k=keyf(l),i=l.i,q=i.qty*(i.factor||1),rev=i.qty*i.price,pf=i.qty*(i.price-(i.cost||0)*(1));const o=g[k]||(g[k]={k,name:i.name,pid:i.pid,qty:0,rev:0,profit:0,cost:0});o.qty+=q;o.rev+=rev;o.cost+=i.qty*(i.cost||0);o.profit+=pf});return Object.values(g)}
+const insTot=L=>{const net=sum(L,saleNet),cost=sum(L,saleCost);return {n:L.length,total:sum(L,s=>s.total),net,cost,profit:net-cost,disc:sum(L,s=>num(s.discount)),avg:L.length?sum(L,s=>s.total)/L.length:0}};
+const insChg=(a,b)=>{if(!b)return '';const c=(a-b)/Math.abs(b)*100;return `<span class="badge ${c>=0?'ok':'warn'}">${c>=0?'▲':'▼'} ${Math.abs(c).toFixed(1)}%</span>`};
+const insTbl=(cols,rows,empty)=>`<div class="tw"><table><thead><tr>${cols.map(c=>`<th class="${c[1]||''}">${t(c[0])}</th>`).join('')}</tr></thead><tbody>${rows.join('')||`<tr><td colspan="${cols.length}" class="empty">${empty||t('No data')}</td></tr>`}</tbody></table></div>`;
+const insSay=h=>`<div class="card mb" style="background:var(--pri-l);border-color:transparent"><div style="font-size:15px;line-height:1.6">${h}</div></div>`;
+const insName=o=>{const p=prod(o.pid);return esc(o.name||(p&&p.name)||'—')};
+const insPerTxt=()=>t((INS_PER.find(x=>x[0]===S.ins.p)||INS_PER[2])[1]);
+function insCostChanges(days=60){
+  const out=[];const rc=DB.purchases.filter(x=>x.status==='received').sort((a,b)=>String(a.receivedAt||a.date).localeCompare(String(b.receivedAt||b.date)));
+  const hist={};rc.forEach(po=>po.items.forEach(i=>{const k=i.pid+'|'+(i.vid||'');const c=(i.cost||0)/(i.factor||1);(hist[k]=hist[k]||[]).push({c,d:po.receivedAt||po.date,no:po.no})}));
+  Object.entries(hist).forEach(([k,a])=>{if(a.length<2)return;const l=a[a.length-1],pr=a[a.length-2];if(l.c>pr.c+1e-9&&daysTo(dkey(l.d))>=-days){const p=prod(k.split('|')[0]);if(p)out.push({p,from:pr.c,to:l.c,date:l.d,no:l.no})}});
+  return out.sort((a,b)=>String(b.date).localeCompare(String(a.date)))}
+const insRoundPrice=v=>DB.settings.currency==='MMK'||v>=100?Math.ceil(v/50)*50:Math.round(v*100)/100;
+function insAnswer(q,ids,r){
+  const L=insSales(r,ids),T=insTot(L),per=insPerTxt();
+  if(q==='top'||q==='profit'){
+    const A=insAgg(L).sort((a,b)=>q==='top'?b.qty-a.qty:b.profit-a.profit),top=A.slice(0,10),f=A[0];
+    return (f?insSay(q==='top'?t('{p}: best seller — {q} sold, {a}',{p:'<b>'+insName(f)+'</b>',q:nf(f.qty),a:money(f.rev)}):t('{p}: most profit — {a}',{p:'<b>'+insName(f)+'</b>',a:money(f.profit)})):'')
+      +hbars(top.map(o=>({l:o.name||'',v:Math.max(0,q==='top'?o.qty:o.profit)})),q==='top'?nf:money)
+      +insTbl([['Product'],['Qty','r'],['Sales','r'],['Profit','r'],['Margin','r']],top.map(o=>`<tr><td>${insName(o)}</td><td class="r">${nf(o.qty)}</td><td class="r">${money(o.rev)}</td><td class="r">${money(o.profit)}</td><td class="r">${o.rev?(o.profit/o.rev*100).toFixed(1):0}%</td></tr>`));
+  }
+  if(q==='slow'){
+    const dd=S.ins.dd,from=new Date();from.setDate(from.getDate()-dd);const fk=dkey(from);
+    const sold=new Set();DB.sales.filter(s=>s.status==='completed'&&ids.includes(s.branchId)&&dkey(s.date)>=fk).forEach(s=>s.items.forEach(i=>sold.add(i.pid)));
+    const D=DB.products.filter(p=>p.active!==false&&p.trackStock!==false&&!sold.has(p.id)).map(p=>({p,q:sum(ids,b=>stockOf(p,b))})).filter(x=>x.q>0).map(x=>({...x,v:x.q*num(x.p.cost)})).sort((a,b)=>b.v-a.v);
+    const ex=(DB.batches||[]).filter(x=>ids.includes(x.branchId)&&x.qty>0&&x.exp&&daysTo(x.exp)<=expDays()).sort((a,b)=>a.exp.localeCompare(b.exp));
+    return `<div class="row wrap mb">${t('Not sold in')} <select id="insDd" style="width:auto">${[30,60,90,180].map(n=>`<option value="${n}" ${n===dd?'selected':''}>${n} ${t('days')}</option>`).join('')}</select></div>`
+      +insSay(t('{n} products have not sold in {d} days — stock value {v}',{n:D.length,d:dd,v:'<b>'+money(sum(D,x=>x.v))+'</b>'}))
+      +insTbl([['Product'],['Stock','r'],['Value (cost)','r']],D.slice(0,50).map(x=>`<tr><td>${esc(x.p.name)}</td><td class="r">${nf(x.q)} ${esc(x.p.unit||'')}</td><td class="r">${money(x.v)}</td></tr>`),t('Everything has sold recently'))
+      +`<h4 class="mt">📅 ${t('Near expiry / expired')}</h4>`+insTbl([['Product'],['Batch'],['Expiry'],['Qty','r']],ex.slice(0,50).map(x=>{const p=prod(x.pid),d=daysTo(x.exp);return `<tr><td>${esc(p?vName(p,x.vid):'—')}</td><td>${esc(x.no||'')}</td><td>${fdk(x.exp)} <span class="${d<0?'err':''}" style="${d>=0?'color:var(--warn)':''}">${d<0?t('Expired'):d+' '+t('days')}</span></td><td class="r">${nf(x.qty)}</td></tr>`}),t('Nothing is expiring soon'));
+  }
+  if(q==='pl'){
+    const cashOut=DB.cashEntries.filter(e=>e.type==='out'&&!['refund','purchase'].includes(e.kind)&&ids.includes(e.branchId)&&dkey(e.date)>=r[0]&&dkey(e.date)<=r[1]),ex=sum(cashOut,e=>num(e.amount)),buy=sum(DB.purchases.filter(x=>x.status==='received'&&ids.includes(x.branchId)&&dkey(x.receivedAt||x.date)>=r[0]&&dkey(x.receivedAt||x.date)<=r[1]),x=>x.total),net=T.profit-ex;
+    const row=(a,b,cls='')=>`<tr><td class="${cls}">${t(a)}</td><td class="r ${cls}">${b}</td></tr>`;
+    return insSay(net>=0?t('{p}: profit about {a} after expenses',{p:'<b>'+per+'</b>',a:'<b>'+money(net)+'</b>'}):t('{p}: loss about {a} after expenses',{p:'<b>'+per+'</b>',a:'<b class="err">'+money(-net)+'</b>'}))
+      +insTbl([['Item'],['Amount','r']],[row('Sales (incl. tax)',money(T.total)),row('Tax',money(T.total-T.net)),row('Sales (net)',money(T.net),'b'),row('Cost of goods sold','− '+money(T.cost)),row('Gross profit',money(T.profit),'b'),row('Other cash expenses','− '+money(ex)),row('Net profit',money(net),'b')])
+      +`<div class="mut sm mt">${t('Gross margin')}: ${T.net?(T.profit/T.net*100).toFixed(1):0}% · ${t('Orders')}: ${T.n} · ${t('Purchases received in this period')}: ${money(buy)} (${t('not deducted — stock purchases are counted through cost of goods sold')})</div>`;
+  }
+  if(q==='reorder'){
+    const from=new Date();from.setDate(from.getDate()-30);const fk=dkey(from),rate={};
+    DB.sales.filter(s=>s.status==='completed'&&ids.includes(s.branchId)&&dkey(s.date)>=fk).forEach(s=>s.items.forEach(i=>{const k=i.pid+'|'+(i.vid&&hasVars(prod(i.pid))?i.vid:'');rate[k]=(rate[k]||0)+i.qty*(i.factor||1)/30}));
+    const R=[];DB.products.filter(p=>p.active!==false&&p.trackStock!==false).forEach(p=>{const ks=hasVars(p)?p.variants.map(v=>v.id):[''];ks.forEach(vid=>{const rt=rate[p.id+'|'+vid]||0,st=vid?sum(ids,b=>vStock(p,vid,b)):sum(ids,b=>stockOf(p,b)),left=rt>0?st/rt:Infinity,low=num(p.minStock)>0&&st<=num(p.minStock);
+      if(left<=14||low){const need=Math.max(Math.ceil(rt*30-st),low?Math.max(0,num(p.minStock)*2-st):0);if(need>0)R.push({p,vid,rt,st,left,need})}})});
+    R.sort((a,b)=>a.left-b.left);
+    S.insRe=R;
+    return insSay(t('{n} items should be re-ordered soon (stock lasts 14 days or less, based on the last 30 days of sales)',{n:'<b>'+R.length+'</b>'}))
+      +insTbl([['Product'],['Stock','r'],['Sold / day','r'],['Lasts','r'],['Suggested qty (30 days)','r']],R.slice(0,60).map(x=>`<tr><td>${esc(vName(x.p,x.vid))}</td><td class="r">${nf(x.st)} ${esc(x.p.unit||'')}</td><td class="r">${nf(x.rt)}</td><td class="r ${x.left<=3?'err':''}">${x.left===Infinity?'—':Math.floor(x.left)+' '+t('days')}</td><td class="r b">${nf(x.need)}</td></tr>`),t('All products have enough stock'))
+      +(R.length&&can('purchase')?`<div class="mt"><button class="btn pri" data-act="insPO">${ic('plus')} ${t('Create purchase order from this list')}</button></div>`:'');
+  }
+  if(q==='compare'){
+    const pr=insPrev(S.ins.p),P=insTot(insSales(pr,ids)),cur=insAgg(L,l=>(cat(prod(l.i.pid)?.categoryId)||{}).name||t('No category')),prv=Object.fromEntries(insAgg(insSales(pr,ids),l=>(cat(prod(l.i.pid)?.categoryId)||{}).name||t('No category')).map(o=>[o.k,o]));
+    const row=(n,a,b,f=money)=>`<tr><td>${t(n)}</td><td class="r">${f(a)}</td><td class="r mut">${f(b)}</td><td class="r">${insChg(a,b)||'—'}</td></tr>`;
+    return insSay(t('{p} compared with {q}: sales {c}',{p:'<b>'+per+'</b>',q:fdk(pr[0])+' – '+fdk(pr[1]),c:insChg(T.total,P.total)||'—'}))
+      +insTbl([['Metric'],['This period','r'],['Previous','r'],['Change','r']],[row('Sales (incl. tax)',T.total,P.total),row('Gross profit',T.profit,P.profit),row('Orders',T.n,P.n,nf),row('Average order',T.avg,P.avg),row('Discounts',T.disc,P.disc)])
+      +`<h4 class="mt">${t('By category')}</h4>`+insTbl([['Category'],['This period','r'],['Previous','r'],['Change','r']],cur.sort((a,b)=>b.rev-a.rev).map(o=>`<tr><td>${esc(o.k)}</td><td class="r">${money(o.rev)}</td><td class="r mut">${money((prv[o.k]||{}).rev||0)}</td><td class="r">${insChg(o.rev,(prv[o.k]||{}).rev)||'—'}</td></tr>`));
+  }
+  if(q==='by'){
+    const by=S.ins.by,opts=[['category','Category'],...(multiBr()?[['store','Store']]:[]),...(chanOn()&&chans().length>1?[['channel','Sales channel']]:[]),...(wholesaleOn()?[['mode','Retail / Wholesale']]:[])];
+    const kf={category:l=>(cat((prod(l.i.pid)||{}).categoryId)||{}).name||t('No category'),store:l=>brn(l.s.branchId),channel:l=>CHN(saleChan(l.s)),mode:l=>l.s.mode==='wholesale'?t('Wholesale'):t('Retail')}[by]||(l=>'');
+    const A=insAgg(L,kf).sort((a,b)=>b.profit-a.profit);
+    return `<div class="row wrap mb">${opts.map(o=>`<button class="chip ${by===o[0]?'on':''}" data-act="insBy" data-v="${o[0]}">${t(o[1])}</button>`).join('')}</div>`
+      +(A[0]?insSay(t('{p} gives the most profit: {a}',{p:'<b>'+esc(A[0].k)+'</b>',a:'<b>'+money(A[0].profit)+'</b>'})):'')
+      +hbars(A.map(o=>({l:o.k,v:Math.max(0,o.profit)})),money)
+      +insTbl([['Name'],['Sales','r'],['Profit','r'],['Margin','r']],A.map(o=>`<tr><td>${esc(o.k)}</td><td class="r">${money(o.rev)}</td><td class="r">${money(o.profit)}</td><td class="r">${o.rev?(o.profit/o.rev*100).toFixed(1):0}%</td></tr>`));
+  }
+  if(q==='cust'){
+    const all=DB.sales.filter(s=>s.status==='completed'&&s.customerId&&ids.includes(s.branchId)),g={};
+    all.forEach(s=>{const o=g[s.customerId]||(g[s.customerId]={id:s.customerId,n:0,tot:0,last:'',per:0});o.n++;o.tot+=s.total;if(s.date>o.last)o.last=s.date;if(dkey(s.date)>=r[0]&&dkey(s.date)<=r[1])o.per+=s.total});
+    const A=Object.values(g),top=A.filter(x=>x.per>0).sort((a,b)=>b.per-a.per).slice(0,10),lap=A.filter(x=>-daysTo(dkey(x.last))>=30).sort((a,b)=>a.last.localeCompare(b.last)).slice(0,20),nm=id=>esc((cust(id)||{name:'—'}).name);
+    return (top[0]?insSay(t('{p}: top customer — {c}, {a}',{p:'<b>'+per+'</b>',c:'<b>'+nm(top[0].id)+'</b>',a:money(top[0].per)})):'')
+      +`<h4>${t('Top buyers')} (${per})</h4>`+insTbl([['Customer'],['Purchases','r'],['Amount','r']],top.map(x=>`<tr><td>${nm(x.id)}</td><td class="r">${x.n}</td><td class="r">${money(x.per)}</td></tr>`),t('No customer sales in this period'))
+      +`<h4 class="mt">${t('Not seen for 30+ days')}</h4>`+insTbl([['Customer'],['Last purchase'],['Days ago','r'],['Total spent','r']],lap.map(x=>`<tr><td>${nm(x.id)}</td><td>${fdk(dkey(x.last))}</td><td class="r">${-daysTo(dkey(x.last))}</td><td class="r">${money(x.tot)}</td></tr>`),t('No lapsed customers'));
+  }
+  if(q==='cost'){
+    const C=insCostChanges();
+    return insSay(t('{n} products became more expensive to buy in the last 60 days',{n:'<b>'+C.length+'</b>'}))
+      +insTbl([['Product'],['Old cost','r'],['New cost','r'],['Sell price','r'],['Margin now','r'],['Suggested price','r'],['']],C.map(c=>{const p=c.p,old=c.from,m0=old>0?(num(p.price)-old)/old:0,sug=insRoundPrice(c.to*(1+m0)),mg=num(p.price)?(num(p.price)-c.to)/num(p.price)*100:0;
+        return `<tr><td>${esc(p.name)}<div class="mut sm">${esc(c.no||'')}</div></td><td class="r">${money(c.from)}</td><td class="r err">${money(c.to)}</td><td class="r">${money(p.price)}</td><td class="r ${mg<10?'err':''}">${mg.toFixed(1)}%</td><td class="r b">${money(sug)}</td><td class="r">${isMgr()?`<button class="btn sm" data-act="insPrice" data-id="${p.id}" data-v="${sug}">${t('Apply')}</button>`:''}</td></tr>`}),t('No cost increases'));
+  }
+  if(q==='daily'){
+    const td=[dkey(new Date()),dkey(new Date())],L2=insSales(td,ids),T2=insTot(L2),vd=DB.sales.filter(s=>s.status==='void'&&ids.includes(s.branchId)&&dkey(s.date)===td[0]).length,pm={};
+    L2.forEach(s=>s.payments.forEach(p=>{pm[p.method]=(pm[p.method]||0)+p.amount}));
+    const cod=DB.sales.filter(s=>s.status==='cod'&&ids.includes(s.branchId)),creditToday=sum(L2,s=>num(s.due)),top=insAgg(L2).sort((a,b)=>b.rev-a.rev).slice(0,3);
+    return insSay(t('Today: {n} sales, {a} (profit {p})',{n:'<b>'+T2.n+'</b>',a:'<b>'+money(T2.total)+'</b>',p:money(T2.profit)}))
+      +insTbl([['Item'],['Value','r']],[[t('Orders'),T2.n],[t('Sales (incl. tax)'),money(T2.total)],[t('Gross profit'),money(T2.profit)],[t('Discounts'),money(T2.disc)],[t('Voided sales'),vd],[t('Credit given today'),money(creditToday)],[t('COD waiting to be collected'),cod.length+' · '+money(sum(cod,s=>s.total))],[t('Total credit outstanding'),money(sum(DB.sales.filter(s=>s.status!=='void'&&ids.includes(s.branchId)),s=>num(s.due)))]].map(x=>`<tr><td>${x[0]}</td><td class="r b">${x[1]}</td></tr>`))
+      +`<h4 class="mt">${t('Payments received today')}</h4>`+insTbl([['Method'],['Amount','r']],Object.entries(pm).map(([k,v])=>`<tr><td>${esc(PAYNAME(k))}</td><td class="r">${money(v)}</td></tr>`))
+      +(top.length?`<h4 class="mt">${t('Top today')}</h4>`+hbars(top.map(o=>({l:o.name||'',v:o.rev})),money):'');
+  }
+  return '';
+}
+VIEWS.insights=function(){
+  const f=S.ins,ids=insIds(),r=insRange(f.p),L=insSales(r,ids),T=insTot(L),P=insTot(insSales(insPrev(f.p),ids));
+  main().innerHTML=`<div class="toolbar"><div class="row wrap sp">${INS_PER.map(x=>`<button class="chip ${f.p===x[0]?'on':''}" data-act="insPer" data-v="${x[0]}">${t(x[1])}</button>`).join('')}</div>${multiBr()?`<select id="insBr" style="width:auto"><option value="all">${t('All branches')}</option>${myBranches().map(b=>`<option value="${b.id}" ${f.branch===b.id?'selected':''}>${esc(b.name)}</option>`).join('')}</select>`:''}</div>
+  <div class="grid4 mb">${kpi('coins','c1',t('Sales'),money(T.total),insChg(T.total,P.total)||'&nbsp;')}${kpi('trend','c2',t('Gross profit'),money(T.profit),insChg(T.profit,P.profit)||'&nbsp;')}${kpi('sales','c3',t('Orders'),String(T.n),insChg(T.n,P.n)||'&nbsp;')}${kpi('reports','c4',t('Average order'),money(T.avg),insChg(T.avg,P.avg)||'&nbsp;')}</div>
+  <div class="row wrap mb">${INS_Q.map(q=>`<button class="chip ${f.q===q[0]?'on':''}" data-act="insQ" data-v="${q[0]}">${q[1]} ${t(q[2])}</button>`).join('')}</div>
+  <div class="card" id="insBody">${insAnswer(f.q,ids,r)}</div>`;
+  const br=$('#insBr');if(br)br.onchange=()=>{f.branch=br.value;VIEWS.insights()};
+  const dd=$('#insDd');if(dd)dd.onchange=()=>{f.dd=+dd.value;VIEWS.insights()};
+};
+ACT.insPer=el=>{S.ins.p=el.dataset.v;VIEWS.insights()};
+ACT.insQ=el=>{S.ins.q=el.dataset.v;VIEWS.insights()};
+ACT.insBy=el=>{S.ins.by=el.dataset.v;VIEWS.insights()};
+ACT.insPO=()=>{S.purPre=(S.insRe||[]).map(x=>({pid:x.p.id,vid:x.vid||'',qty:x.need}));ACT.purNew()};
+ACT.insPrice=async el=>{const p=prod(el.dataset.id);if(!p)return;const v=num(el.dataset.v);
+  if(!await confirmBox(t('Change the selling price of "{n}" from {a} to {b}?',{n:p.name,a:money(p.price),b:money(v)}),{ok:'Apply'}))return;
+  p.price=v;p.updatedAt=now();delete p.costUp;save();toast(t('Price updated'),'ok');VIEWS.insights()};
+
 VIEWS.reports=function(){
   const f=S.rep,pr=presetRange(f.preset);if(pr){[f.from,f.to]=pr}else if(!f.from){[f.from,f.to]=presetRange('month')}
   const bs=myBranches(),head=`<div class="page-h"><h3>${t('Reports')}</h3><button class="btn" data-act="repXlsx">${ic('download')} Excel</button><button class="btn" data-act="repPrint">${ic('print')} ${t('Print')}</button></div>
@@ -2363,11 +2670,11 @@ function labelHTML(L,{code,name,price,store},o){
 }
 function labelItems(){
   const o=S.bc,out=[];
-  Object.entries(o.items).forEach(([id,n])=>{const p=prod(id);if(!p)return;for(let i=0;i<n;i++)out.push({code:p.barcode||p.sku||'',name:p.name,price:p.price,store:DB.settings.storeName})});
+  Object.entries(o.items).forEach(([id,n])=>{const [pid,vid]=id.split('|'),p=prod(pid);if(!p)return;const v=vOf(p,vid);for(let i=0;i<n;i++)out.push({code:v?(v.barcode||v.sku||''):(p.barcode||p.sku||''),name:v?vName(p,vid):p.name,price:p.price,store:DB.settings.storeName})});
   return out;
 }
 VIEWS.barcode=function(){
-  const o=S.bc,sel=Object.keys(o.items).map(prod).filter(Boolean),missing=DB.products.filter(p=>!p.barcode&&p.active!==false).length,old13=DB.products.filter(p=>/^20\d{11}$/.test(p.barcode||'')).length;
+  const o=S.bc,sel=Object.keys(o.items).map(k=>{const [pid,vid]=k.split('|'),q=prod(pid);return q?{id:k,name:vName(q,vid),barcode:vid?(vOf(q,vid)||{}).barcode:q.barcode,sku:vid?(vOf(q,vid)||{}).sku:q.sku}:null}).filter(Boolean),missing=DB.products.filter(p=>!p.barcode&&p.active!==false).length,old13=DB.products.filter(p=>/^20\d{11}$/.test(p.barcode||'')).length;
   const L=LABELS[o.size],items=labelItems();
   main().innerHTML=`<div class="page-h"><h3>${t('Barcode labels')}</h3></div>
   <div class="grid2" style="grid-template-columns:1fr 1.2fr;align-items:start">
@@ -2385,7 +2692,7 @@ VIEWS.barcode=function(){
     <div class="row wrap mb"><label class="row"><input type="checkbox" id="bn" ${o.name?'checked':''}> ${t('Product name')}</label><label class="row"><input type="checkbox" id="bp" ${o.price?'checked':''}> ${t('Price')}</label><label class="row"><input type="checkbox" id="bs" ${o.store?'checked':''}> ${t('Store name')}</label><span class="sp"></span><button class="btn pri" data-act="bcPrint" ${items.length?'':'disabled'}>${ic('print')} ${t('Print labels')}</button></div>
     <div class="lab-prev" id="bprev">${items.slice(0,24).map(i=>labelHTML(L,i,o)).join('')||`<div class="mut" style="margin:auto;padding:30px">${t('Select products to preview labels')}</div>`}</div>${items.length>24?`<div class="mut sm mt">${t('Showing first 24 of {n} labels',{n:items.length})}</div>`:''}
     <p class="mut sm mt">${t('Tip: set your printer paper size to match the label and scale to 100% (no "fit to page").')}</p></div></div>`;
-  picker($('#bq'),p=>{o.items[p.id]=(o.items[p.id]||0)+1;VIEWS.barcode();setTimeout(()=>{const q=$('#bq');q&&q.focus()},0)});
+  picker($('#bq'),(p,vid)=>{const k=vid?p.id+'|'+vid:p.id;o.items[k]=(o.items[k]||0)+1;VIEWS.barcode();setTimeout(()=>{const q=$('#bq');q&&q.focus()},0)});
   $$('[data-bc]').forEach(i=>i.onchange=()=>{o.items[i.dataset.bc]=Math.max(0,Math.round(num(i.value)));VIEWS.barcode()});
   $('#bsz').onchange=e=>{o.size=e.target.value;VIEWS.barcode()};$('#bty').onchange=e=>{o.type=e.target.value;VIEWS.barcode()};
   $('#bn').onchange=e=>{o.name=e.target.checked;VIEWS.barcode()};$('#bp').onchange=e=>{o.price=e.target.checked;VIEWS.barcode()};$('#bs').onchange=e=>{o.store=e.target.checked;VIEWS.barcode()};
@@ -2395,7 +2702,7 @@ VIEWS.barcode=function(){
 ACT.bcRm=el=>{delete S.bc.items[el.dataset.id];VIEWS.barcode()};
 ACT.bcClear=()=>{S.bc.items={};VIEWS.barcode()};
 ACT.bcAllLow=()=>{DB.products.filter(p=>p.active!==false).forEach(p=>{if(!S.bc.items[p.id])S.bc.items[p.id]=1});VIEWS.barcode()};
-ACT.bcSetAll=()=>{Object.keys(S.bc.items).forEach(id=>S.bc.items[id]=Math.max(1,Math.round(stockOf(prod(id)))));VIEWS.barcode()};
+ACT.bcSetAll=()=>{Object.keys(S.bc.items).forEach(id=>{const [pid,vid]=id.split('|');S.bc.items[id]=Math.max(1,Math.round(availOf(prod(pid),vid)))});VIEWS.barcode()};
 ACT.bcGen=async()=>{const L=DB.products.filter(p=>!p.barcode&&p.active!==false);if(!await confirmBox(t('Assign a new 8-digit barcode to {n} products?',{n:L.length})))return;L.forEach(p=>{p.barcode=genEAN();p.updatedAt=now()});save();toast(t('Barcodes generated'),'ok');VIEWS.barcode()};
 ACT.bcGenCustom=()=>{S.bc.custom=genEAN();S.bc.type='ean8';VIEWS.barcode()};
 ACT.bcConv=async()=>{const L=DB.products.filter(p=>/^20\d{11}$/.test(p.barcode||''));if(!L.length)return;
@@ -2438,7 +2745,7 @@ VIEWS.settings=function(){
     <div class="fg"><label class="f">${t('Payment methods')}</label><div id="pmBox" class="chips"></div></div>
     <div class="fg"><label class="f">${t('Units')}</label><div id="unBox" class="chips"></div><div class="mut sm mt">${t('The list shown when you add a product. You can still type a new unit on the product itself.')}</div></div>
     ${fld(t('Sales channels (comma separated, first = default)'),inp('channels',(st.channels||DEF_CHANNELS).join(', ')))}
-    ${adm?`<div class="card mb" style="background:var(--bg);padding:12px 14px"><div class="b mb">${t('Features')}</div><div class="row wrap"><label class="row"><input type="checkbox" name="useChannels" ${chanOn()?'checked':''}> ${t('Use sales channels (In-store / Online …)')}</label><label class="row">${t('Shift / Cash Closing')}: <select name="shiftMode">${opts([['required',t('Required before selling')],['optional',t('Optional (use only when needed)')],['off',t('Off (hide Cash Closing)')]],shiftMode())}</select></label><label class="row"><input type="checkbox" name="useCOD" ${codOn()?'checked':''}> ${t('Use Cash on Delivery (COD)')}</label><label class="row"><input type="checkbox" name="posImg" ${st.posImg!==false?'checked':''}> ${t('Show product pictures in POS')}</label><label class="row"><input type="checkbox" name="useWholesale" ${wholesaleOn()?'checked':''}> ${t('Use wholesale pricing')}</label><label class="row"><input type="checkbox" name="useCredit" ${creditOn()?'checked':''}> ${t('Use customer credit (အကြွေး)')}</label></div>
+    ${adm?`<div class="card mb" style="background:var(--bg);padding:12px 14px"><div class="b mb">${t('Features')}</div><div class="row wrap"><label class="row"><input type="checkbox" name="useChannels" ${chanOn()?'checked':''}> ${t('Use sales channels (In-store / Online …)')}</label><label class="row">${t('Shift / Cash Closing')}: <select name="shiftMode">${opts([['required',t('Required before selling')],['optional',t('Optional (use only when needed)')],['off',t('Off (hide Cash Closing)')]],shiftMode())}</select></label><label class="row"><input type="checkbox" name="useCOD" ${codOn()?'checked':''}> ${t('Use Cash on Delivery (COD)')}</label><label class="row"><input type="checkbox" name="posImg" ${st.posImg!==false?'checked':''}> ${t('Show product pictures in POS')}</label><label class="row"><input type="checkbox" name="useWholesale" ${wholesaleOn()?'checked':''} ${planWholesale()?'':'disabled'}> ${t('Use wholesale pricing')}${planWholesale()?'':' <span class="badge warn">'+t('Pro or Premium plan')+'</span>'}</label><label class="row"><input type="checkbox" name="useCredit" ${creditOn()?'checked':''}> ${t('Use customer credit (အကြွေး)')}</label><label class="row"><input type="checkbox" name="useVariants" ${varsOn()?'checked':''}> ${t('Use product variants (size / colour …)')}</label></div>
       <div class="row wrap mt" style="align-items:flex-end"><div class="fg" style="margin:0"><label class="f">${t('Cash closing time (daily)')}</label><input type="time" name="closeTime" value="${esc(st.closeTime||'')}" style="width:140px"></div><label class="row"><input type="checkbox" name="closeBlock" ${st.closeBlock?'checked':''}> ${t('Block new sales after closing time until the shift is closed')}</label></div>
       <div class="mut sm mt">${t('At this time the cashier is reminded to close the shift. Leave empty to turn off.')}</div></div>
     <div class="card mb" style="background:var(--bg);padding:12px 14px"><div class="b mb">${t('Credit terms')}</div><div class="mut sm mb">${t('Days a customer has to pay. 0 = no due date. You can override it per customer and per sale.')}</div>
@@ -2456,14 +2763,14 @@ VIEWS.settings=function(){
     const slot=wholesaleOn()&&S.rslot==='wholesale'?'wholesale':'retail',ro=rcOpts(null,slot),rc=ro.rc,stv=ro.st;
     main().innerHTML=H+`<div class="grid2" style="align-items:start"><div class="card" id="rcs"><input type="hidden" name="slot" value="${slot}">
       ${wholesaleOn()?`<div class="chips mb"><button class="chip ${slot==='retail'?'on':''}" data-act="rcSlot" data-s="retail">${t('Retail receipt')}</button><button class="chip ${slot==='wholesale'?'on':''}" data-act="rcSlot" data-s="wholesale">${t('Wholesale receipt')}</button></div>`:''}
-      <div class="grid2">${fld(t('Paper size'),`<select name="paper">${opts([['58','58 mm'],['80','80 mm'],['A5','A5'],['A4','A4']],stv.paper||'80')}</select>`)}${fld(t('Text size'),`<select name="fs">${opts([['sm',t('Small')],['md',t('Normal')],['lg',t('Large')]],rc.fs)}</select>`)}</div>
+      <div class="grid2">${fld(t('Paper size'),`<select name="paper">${opts([['58','58 mm'],['80','80 mm'],['A5','A5'],...(planA4()?[['A4','A4']]:[])],stv.paper||'80')}</select>`)}${fld(t('Text size'),`<select name="fs">${opts([['sm',t('Small')],['md',t('Normal')],['lg',t('Large')]],rc.fs)}</select>`)}</div>
       <div class="rcsec"><div class="b mb">${t('Header (store name)')}</div>
         ${fld(t('Document title (A5 / A4)'),inp('title',rc.title,'placeholder="'+(slot==='wholesale'?'INVOICE':'RECEIPT')+'"'))}${fld(t('Receipt header'),inp('receiptHeader',stv.receiptHeader))}
         <div class="grid3">${fld(t('Font'),`<select name="hFont">${opts([['sans','Sans-serif'],['serif','Serif'],['mono','Monospace'],['round','Rounded'],['display','Heavy display']],rc.hFont)}</select>`)}${fld(t('Size'),`<select name="hSize">${opts(RC_SIZES,String(rc.hSize))}</select>`)}${fld(t('Align'),`<select name="hAlign">${opts([['left',t('Left')],['center',t('Center')],['right',t('Right')]],rc.hAlign)}</select>`)}</div>
         <div class="row wrap"><label class="row"><input type="checkbox" name="hBold" ${rc.hBold?'checked':''}> <b>${t('Bold')}</b></label><label class="row"><input type="checkbox" name="hItalic" ${rc.hItalic?'checked':''}> <i>${t('Italic')}</i></label></div></div>
       <div class="rcsec"><div class="b mb">${t('Body')}</div>
         <div class="grid2">${fld(t('Font'),`<select name="bFont">${opts([['mono','Monospace'],['sans','Sans-serif'],['serif','Serif']],rc.bFont)}</select>`)}<div style="align-self:end;padding-bottom:12px"><label class="row"><input type="checkbox" name="amtBold" ${rc.amtBold?'checked':''}> <b>${t('Amounts in bold')}</b></label></div></div>
-        <div class="grid2 mt">${[['logo','Store logo'],['addr','Address'],['phone','Phone'],['cashier','Cashier'],['channel','Sales channel'],['units','Quantity × price lines']].map(([k,l])=>`<label class="row"><input type="checkbox" name="${k}" ${rc[k]!==false?'checked':''}> ${t(l)}</label>`).join('')}</div></div>
+        <div class="grid2 mt">${[['logo','Store logo'],['addr','Address'],['phone','Phone'],['cashier','Cashier'],['channel','Sales channel'],['dcode','Delivery code (COD orders)'],['units','Quantity × price lines']].map(([k,l])=>`<label class="row"><input type="checkbox" name="${k}" ${rc[k]!==false?'checked':''}> ${t(l)}</label>`).join('')}</div></div>
       <div class="rcsec"><div class="b mb">${t('Footer')}</div>
         ${fld(t('Receipt footer'),inp('receiptFooter',stv.receiptFooter))}<label class="row mb"><input type="checkbox" name="sign" ${rc.sign?'checked':''}> ${t('Signature lines (A5 / A4)')}</label>${fld(t('Extra note (e.g. return policy)'),inp('note',rc.note))}
         ${fld(t('Space between body and footer'),`<select name="fGap">${opts([['0',t('None')],['3','3 mm'],['6','6 mm'],['10','10 mm'],['15','15 mm'],['20','20 mm'],['30','30 mm']],String(rc.fGap))}</select>`)}
@@ -2478,7 +2785,7 @@ VIEWS.settings=function(){
     ${DB.branches.map(b=>`<tr><td class="b">${esc(b.name)}</td><td>${esc(b.code)}</td><td class="w">${esc(b.address||'')}</td><td>${esc(b.phone||'')}</td><td>${b.active!==false?`<span class="badge ok">${t('Active')}</span>`:`<span class="badge gr">${t('Inactive')}</span>`}</td><td class="r"><button class="btn sm" data-act="brEdit" data-id="${b.id}">${ic('edit')}</button></td></tr>`).join('')}</tbody></table></div>`;
   }else if(f.tab==='users'){
     main().innerHTML=H+`<div class="row mb"><span class="sp mut">${t('Admin: everything · Manager: all except License, Branches and Admin accounts · Cashier: POS, Sales, Cash Closing · Stock: Inventory, Purchase, Barcode')}</span><button class="btn pri" data-act="usNew">${ic('plus')} ${t('Add user')}</button></div><div class="tw"><table><thead><tr><th>${t('Name')}</th><th>${t('Username')}</th><th>${t('Role')}</th><th>${t('Branches')}</th><th>${t('Status')}</th><th></th></tr></thead><tbody>
-    ${DB.users.filter(u=>adm||u.role!=='admin').map(u=>`<tr><td class="b">${esc(u.name)}</td><td>${esc(u.username)}</td><td><span class="badge">${t(u.role)}</span></td><td class="w">${u.branchIds.includes('*')?t('All branches'):u.branchIds.map(i=>esc(bname(i))).join(', ')}</td><td>${u.active!==false?`<span class="badge ok">${t('Active')}</span>`:`<span class="badge gr">${t('Inactive')}</span>`}</td><td class="r"><button class="btn sm" data-act="usEdit" data-id="${u.id}">${ic('edit')}</button></td></tr>`).join('')}</tbody></table></div>`+`<h3 style="margin:24px 0 10px">${t('Appearance')}</h3>`+appearHTML();
+    ${DB.users.filter(u=>adm||u.role!=='admin').map(u=>`<tr><td class="b">${esc(u.name)}</td><td>${esc(u.username)}</td><td><span class="badge">${t(u.role)}</span></td><td class="w">${u.branchIds.includes('*')?t('All branches'):u.branchIds.map(i=>esc(bname(i))).join(', ')}</td><td>${u.active!==false?`<span class="badge ok">${t('Active')}</span>`:`<span class="badge gr">${t('Inactive')}</span>`}</td><td class="r">${u.id!==S.user.id&&(adm||(u.role!=='admin'&&u.role!=='manager'))?`<button class="btn sm" data-act="usPin" data-id="${u.id}" title="${t('Reset PIN')}">${ic('lock')} ${t('Reset PIN')}</button> `:''}<button class="btn sm" data-act="usEdit" data-id="${u.id}">${ic('edit')}</button></td></tr>`).join('')}</tbody></table></div>`+`<h3 style="margin:24px 0 10px">${t('Appearance')}</h3>`+appearHTML();
   }else{
     const c=st.cloud;
     main().innerHTML=H+`<div class="grid2" style="align-items:start"><div>
@@ -2496,7 +2803,7 @@ VIEWS.settings=function(){
   }
 };
 const RC_SIZES=[['80','80%'],['100','100%'],['125','125%'],['150','150%'],['175','175%'],['200','200%'],['250','250%']];
-function rcForm(){const f=getForm($('#rcs'));return {slot:f.slot,paper:f.paper,receiptHeader:f.receiptHeader,receiptFooter:f.receiptFooter,rc:{title:(f.title||'').trim(),sign:f.sign,fs:f.fs,note:f.note,logo:f.logo,addr:f.addr,phone:f.phone,cashier:f.cashier,channel:f.channel,units:f.units,hFont:f.hFont,hSize:num(f.hSize),hAlign:f.hAlign,hBold:f.hBold,hItalic:f.hItalic,bFont:f.bFont,amtBold:f.amtBold,fSize:num(f.fSize),fGap:num(f.fGap),fAlign:f.fAlign,fBold:f.fBold,fItalic:f.fItalic}}}
+function rcForm(){const f=getForm($('#rcs'));return {slot:f.slot,paper:f.paper,receiptHeader:f.receiptHeader,receiptFooter:f.receiptFooter,rc:{title:(f.title||'').trim(),sign:f.sign,fs:f.fs,note:f.note,logo:f.logo,addr:f.addr,phone:f.phone,cashier:f.cashier,channel:f.channel,units:f.units,dcode:f.dcode,hFont:f.hFont,hSize:num(f.hSize),hAlign:f.hAlign,hBold:f.hBold,hItalic:f.hItalic,bFont:f.bFont,amtBold:f.amtBold,fSize:num(f.fSize),fGap:num(f.fGap),fAlign:f.fAlign,fBold:f.fBold,fItalic:f.fItalic}}}
 ACT.rcSlot=el=>{S.rslot=el.dataset.s;renderView()};
 ACT.rcSave=()=>{const o=rcForm(),st=DB.settings;if(o.slot==='wholesale'){st.wsRc={paper:o.paper,receiptHeader:o.receiptHeader,receiptFooter:o.receiptFooter,rc:o.rc}}else{st.paper=o.paper;st.receiptHeader=o.receiptHeader;st.receiptFooter=o.receiptFooter;st.rc=o.rc}save();toast(t('Settings saved'),'ok')};
 ACT.rcTest=()=>{const o=rcForm();printDoc(receiptHTML(sampleSale(o.slot),o),(RC_PAPERS[o.paper]||RC_PAPERS['80']).css,true)};
@@ -2552,7 +2859,7 @@ ACT.genSave=async()=>{
       st.currencies=L.filter(c=>c!==nb).map(c=>({...c,rate:c.rate/nb.rate}));st.currencies.unshift(old);st.currencySym=nb.symbol}}
   Object.assign(st,{storeName:f.storeName.trim(),phone:f.phone,address:f.address,currency:f.currency,channels:(c=>c.length?c:DEF_CHANNELS.slice())([...new Set(String(f.channels||'').split(',').map(x=>x.trim()).filter(Boolean))])});
   if(isAdmin()){st.modules={};MODULES.forEach(([k])=>{st.modules[k]=f['mod_'+k]!==false})}
-  if(isAdmin())Object.assign(st,{taxMode:f.taxMode,taxRate:num(f.taxRate),useChannels:f.useChannels,useCOD:f.useCOD,shiftMode:f.shiftMode||'required',posImg:f.posImg,useWholesale:f.useWholesale,useCredit:f.useCredit,creditDaysWs:Math.max(0,Math.floor(num(f.creditDaysWs))),creditDaysRt:Math.max(0,Math.floor(num(f.creditDaysRt))),allowRetailCredit:!!f.allowRetailCredit,blockOverdue:!!f.blockOverdue,expWarnDays:Math.max(0,Math.floor(num(f.expWarnDays))),dueWarnDays:Math.max(0,Math.floor(num(f.dueWarnDays))),closeTime:f.closeTime||'',closeBlock:!!f.closeBlock&&!!f.closeTime,autoPrint:f.autoPrint,printPreview:f.printPreview,allowNegative:f.allowNegative});
+  if(isAdmin())Object.assign(st,{taxMode:f.taxMode,taxRate:num(f.taxRate),useChannels:f.useChannels,useCOD:f.useCOD,useVariants:!!f.useVariants,shiftMode:f.shiftMode||'required',posImg:f.posImg,useWholesale:planWholesale()?f.useWholesale:st.useWholesale,useCredit:f.useCredit,creditDaysWs:Math.max(0,Math.floor(num(f.creditDaysWs))),creditDaysRt:Math.max(0,Math.floor(num(f.creditDaysRt))),allowRetailCredit:!!f.allowRetailCredit,blockOverdue:!!f.blockOverdue,expWarnDays:Math.max(0,Math.floor(num(f.expWarnDays))),dueWarnDays:Math.max(0,Math.floor(num(f.dueWarnDays))),closeTime:f.closeTime||'',closeBlock:!!f.closeBlock&&!!f.closeTime,autoPrint:f.autoPrint,printPreview:f.printPreview,allowNegative:f.allowNegative});
   save();toast(t('Settings saved'),'ok');buildShell();
 };
 function brModal(b){
@@ -2591,6 +2898,10 @@ function userModal(u){
   };
   const d=$('#uDel',m);if(d)d.onclick=async()=>{if(u.role==='admin'&&DB.users.filter(x=>x.role==='admin').length<=1)return toast(t('Keep at least one active Admin'),'err');if(await confirmBox(t('Delete user "{n}"?',{n:u.username}),{danger:true,ok:'Delete'})){DB.users=DB.users.filter(x=>x.id!==u.id);save();closeM(m);VIEWS.settings()}};
 }
+ACT.usPin=async el=>{const u=DB.users.find(x=>x.id===el.dataset.id);if(!u||u.id===S.user.id)return;
+  if(!(isAdmin()||(isMgr()&&u.role!=='admin'&&u.role!=='manager')))return toast(t('Not allowed'),'err');
+  if(!await confirmBox(t('Reset the lock PIN of "{n}"? They will create a new PIN the next time they lock the screen.',{n:u.name||u.username}),{danger:true,ok:'Reset PIN'}))return;
+  delete u.pin;u.updatedAt=now();save();toast(t('PIN reset'),'ok');VIEWS.settings()};
 ACT.usNew=()=>userModal();ACT.usEdit=el=>userModal(DB.users.find(u=>u.id===el.dataset.id));
 
 async function askBackupPass(){
@@ -2839,7 +3150,7 @@ const MY={
 'Main currency (prices are in this currency)':'ပင်မငွေကြေး (ရောင်းဈေးများ သတ်မှတ်ထားသော ငွေကြေး)','Other currencies & exchange rates':'အခြားငွေကြေးများနှင့် ငွေလဲနှုန်း','Add currency':'ငွေကြေးထည့်မည်','Edit currency':'ငွေကြေးပြင်မည်','Symbol':'သင်္ကေတ','Rate':'နှုန်း','No other currencies yet.':'အခြားငွေကြေး မရှိသေးပါ။','Used for the “≈” amounts on the POS and for accepting cash in that currency. Update the rate whenever it changes.':'POS တွင် “≈” ပမာဏပြရန်နှင့် ထိုငွေကြေးဖြင့် ငွေသားလက်ခံရန် သုံးပါသည်။ နှုန်းပြောင်းတိုင်း ပြင်ပါ။','Payment methods':'ငွေပေးချေမှုနည်းလမ်းများ','Always available':'အမြဲရှိသည်','Add':'ထည့်မည်','Add payment method':'ငွေပေးချေမှုနည်းလမ်း ထည့်မည်','Name (e.g. KBZPay, Visa)':'အမည် (ဥပမာ KBZPay, Visa)','Already exists':'ရှိပြီးသားဖြစ်သည်','Remove "{n}"? Past sales keep it.':'"{n}" ကို ဖယ်မလား? အရင်အရောင်းမှတ်တမ်းများတွင် ဆက်ရှိနေမည်။','Currency code is required':'ငွေကြေးကုဒ် လိုအပ်သည်','This is already the main currency':'ဤသည်မှာ ပင်မငွေကြေးဖြစ်နေပြီ','Enter an exchange rate greater than 0':'ငွေလဲနှုန်း 0 ထက်ကြီးရမည်','Remove':'ဖယ်ရှားမည်',
 'Cash closing time (daily)':'Cash Closing အချိန် (နေ့စဉ်)','Block new sales after closing time until the shift is closed':'ပိတ်ချိန်ကျော်လျှင် Shift မပိတ်မချင်း အရောင်းအသစ် တားမည်','At this time the cashier is reminded to close the shift. Leave empty to turn off.':'ဤအချိန်ရောက်လျှင် Cashier ကို Shift ပိတ်ရန် သတိပေးပါမည်။ ဗလာထားပါက ပိတ်ထားမည်။','Closing time':'ပိတ်ချိန်','It is past the closing time ({t}). Close the shift now?':'ပိတ်ချိန် ({t}) ကျော်ပြီ။ Shift ကို အခု ပိတ်မလား?','Remind me in 15 min':'၁၅ မိနစ်ကြာမှ ပြန်သတိပေးပါ','Closing time has passed. Close the shift first.':'ပိတ်ချိန်ကျော်ပြီ။ Shift ကို အရင်ပိတ်ပါ။',
 'Customers':'ဝယ်သူစာရင်း','Customer':'ဝယ်သူ','Use wholesale pricing':'လက်ကားဈေး သုံးမည်','Use customer credit (အကြွေး)':'ဝယ်သူအကြွေးစနစ် သုံးမည်','Wholesale price':'လက်ကားဈေး','Leave empty to use the retail price':'မဖြည့်ပါက လက်လီဈေးကို သုံးမည်','Retail':'လက်လီ','Wholesale':'လက်ကား','— Customer —':'— ဝယ်သူ —','Add customer':'ဝယ်သူထည့်မည်','Edit customer':'ဝယ်သူပြင်မည်','On credit':'အကြွေး','Sell on credit':'အကြွေးရောင်းမည်','Paid now':'ယခုပေးငွေ','Nothing is paid now':'ယခု ဘာမှမပေးပါ','— Select customer —':'— ဝယ်သူရွေးပါ —','Select the customer who owes this amount.':'ဤငွေကို ပေးရမည့်ဝယ်သူကို ရွေးပါ။','Current balance':'လက်ရှိကျန်ငွေ','New balance':'အသစ်ကျန်ငွေ','Credit limit':'အကြွေးကန့်သတ်ငွေ','This is over the credit limit.':'အကြွေးကန့်သတ်ငွေ ကျော်နေပါသည်။','Confirm credit sale':'အကြွေးရောင်းချမှု အတည်ပြုမည်','Select the customer':'ဝယ်သူကို ရွေးပါ','Nothing to put on credit':'အကြွေးထားစရာ မရှိပါ','Add a customer first':'ဝယ်သူကို အရင်ထည့်ပါ','ON CREDIT':'အကြွေး','Total owed':'စုစုပေါင်းကျန်ငွေ','WHOLESALE':'လက်ကား','Credit payments received (cash)':'အကြွေးပြန်ရငွေ (ငွေသား)','Credit payments received':'အကြွေးပြန်ရငွေများ','Payments were already received for this sale — it cannot be voided.':'ဤအရောင်းအတွက် ငွေပြန်ရပြီးဖြစ်၍ ပယ်ဖျက်၍မရပါ။','Still owed':'ကျန်ငွေ','Received later':'နောက်မှရငွေ','Receive payment':'ငွေပြန်လက်ခံမည်','Receive':'လက်ခံမည်','Owes':'ကျန်','Credit — unpaid':'အကြွေး — မရှင်းရသေး','Sales by type (Retail / Wholesale)':'အမျိုးအစားအလိုက် (လက်လီ / လက်ကား)','Sales by customer':'ဝယ်သူအလိုက်အရောင်း','Customer balances (credit)':'ဝယ်သူကျန်အကြွေး','Total credit given':'အကြွေးပေးခဲ့သည့်စုစုပေါင်း','Received':'ပြန်ရပြီး','Balance':'ကျန်ငွေ','Oldest unpaid (days)':'အရင်းဆုံးမရှင်းရသေးသည့်ရက်','Type':'အမျိုးအစား','Credit outstanding (all customers)':'ကျန်အကြွေးစုစုပေါင်း (ဝယ်သူအားလုံး)','Customer / shop name':'ဝယ်သူ / ဆိုင်အမည်','0 = no limit':'0 = ကန့်သတ်မထား','Search name or phone':'အမည် သို့မဟုတ် ဖုန်း ရှာရန်','Total owed by customers':'ဝယ်သူများထံ ကျန်ငွေစုစုပေါင်း','Statement':'စာရင်းအသေးစိတ်','No customers yet':'ဝယ်သူ မရှိသေးပါ','This customer has sales and cannot be deleted':'ဤဝယ်သူတွင် အရောင်းမှတ်တမ်းရှိ၍ ဖျက်၍မရပါ','Delete this customer?':'ဤဝယ်သူကို ဖျက်မလား?','Customer statement':'ဝယ်သူစာရင်း','Sale':'အရောင်း','Payment received':'ငွေပြန်ရသည်','Sale total':'အရောင်းစုစုပေါင်း','This customer owes nothing.':'ဤဝယ်သူတွင် ကျန်ငွေမရှိပါ။','Amount received':'ရရှိသည့်ငွေ','Payment method':'ငွေပေးချေမှုနည်းလမ်း','Amount is more than the balance':'ပမာဏသည် ကျန်ငွေထက် များနေသည်','Remaining balance':'ကျန်ငွေ','PAYMENT RECEIPT':'ငွေလက်ခံရရှိကြောင်း ဖြတ်ပိုင်း',
-'City':'မြို့','Retail receipt':'လက်လီ ဘောင်ချာ','Wholesale receipt':'လက်ကား ဘောင်ချာ','Document title (A5 / A4)':'စာရွက်ခေါင်းစဉ် (A5 / A4)','Signature lines (A5 / A4)':'လက်မှတ်ထိုးသည့်လိုင်း (A5 / A4)','Each paper size has its own layout: 58 mm compact, 80 mm table, A5 invoice, A4 formal invoice with customer box and signatures.':'စက္ကူအရွယ်တစ်ခုချင်းစီ ပုံစံမတူပါ — 58mm ကျစ်လျစ်၊ 80mm ဇယား၊ A5 ပြေစာ၊ A4 တရားဝင်ပြေစာ (ဝယ်သူအကွက်နှင့် လက်မှတ်ပါ)။','Bill to':'ဝယ်သူ','Prepared by':'ပြုစုသူ','RECEIPT':'ဘောင်ချာ','Retail + Wholesale':'လက်လီ + လက်ကား','Retail only':'လက်လီသာ','Wholesale only':'လက်ကားသာ','Wholesale sales — each invoice':'လက်ကားရောင်းချမှု — ပြေစာအလိုက်','Sales by city (wholesale)':'မြို့အလိုက် ရောင်းချမှု (လက်ကား)','Import Excel':'Excel တင်သွင်းမည်','Export Excel':'Excel ထုတ်မည်','Import products from Excel':'Excel မှ ကုန်ပစ္စည်းတင်သွင်းမည်','Choose Excel file':'Excel ဖိုင်ရွေးမည်','Could not read this Excel file':'ဤ Excel ဖိုင်ကို မဖတ်နိုင်ပါ','The file needs a "name" column':'ဖိုင်တွင် "name" ကော်လံ လိုအပ်သည်','Shift / Cash Closing':'Shift / Cash Closing','Required before selling':'ရောင်းမည့်အခါ ဖွင့်ရမည်','Optional (use only when needed)':'မဖွင့်လည်းရောင်းနိုင် (လိုမှသုံး)','Off (hide Cash Closing)':'ပိတ်ထားမည် (Cash Closing ဖျောက်)','Could not load Google sign-in. Check the internet connection.':'Google sign-in ကို မဖွင့်နိုင်ပါ။ အင်တာနက်စစ်ပါ။','Google Client ID is not set':'Google Client ID မထည့်ရသေးပါ','Google sign-in needs the app to be opened from an https:// address (not a local file).':'Google ချိတ်ဆက်ရန် app ကို https:// လိပ်စာမှ ဖွင့်ရပါမည် (ကွန်ပျူတာထဲက ဖိုင်ကို တိုက်ရိုက်ဖွင့်လို့မရပါ)။','Google sign-in popup was blocked':'Google sign-in popup ကို ပိတ်ထားသည်','Sending to Google Sheets…':'Google Sheets သို့ ပို့နေသည်…','Saved to Google Sheets':'Google Sheets ထဲ သိမ်းပြီး','Google Sheets failed: {n}':'Google Sheets မအောင်မြင်ပါ: {n}','Not connected':'မချိတ်ရသေးပါ','Auto backup goes to Google Drive':'Auto backup ကို Google Drive သို့ပို့သည်','Google OAuth Client ID':'Google OAuth Client ID','Reconnect / change Google account':'Google အကောင့် ပြန်ချိတ်/ပြောင်း','Connect Google account':'Google အကောင့်ချိတ်မည်','Stop using Google Drive':'Google Drive မသုံးတော့ပါ','Use Google Drive for auto backup':'Auto backup ကို Google Drive သုံးမည်','Disconnect':'ချိတ်ဆက်မှုဖြုတ်မည်','Google account connected':'Google အကောင့် ချိတ်ပြီး','Send to Google Sheets':'Google Sheets သို့ပို့မည်','Google Sheets':'Google Sheets','The app can only see files it created itself.':'App က ကိုယ်ဖန်တီးထားတဲ့ဖိုင်များကိုသာ မြင်နိုင်သည်။','Licensed to (Customer)':'လိုင်စင်ရသူ (ဝယ်သူ)','Store type':'ဆိုင်အမျိုးအစား','Branches allowed (Store limit)':'ခွင့်ပြုဆိုင်ခွဲ (ဆိုင်အရေအတွက်ကန့်သတ်ချက်)','Use the browser menu → Install app / Add to Home Screen':'Browser မီနူးမှ Install app / Add to Home Screen ကို သုံးပါ','A new version is ready — tap here to reload':'ဗားရှင်းသစ် အဆင်သင့်ဖြစ်ပါပြီ — ဤနေရာကိုနှိပ်ပြီး ပြန်ဖွင့်ပါ','Version':'ဗားရှင်း','Works offline':'အင်တာနက်မရှိလည်း အလုပ်လုပ်သည်','Install app on this device':'ဤစက်ထဲ App အဖြစ် Install လုပ်မည်','Cart':'ခြင်းတောင်း','Keep full screen (return to full screen after a pop-up closes)':'Full screen အမြဲထားမည် (pop-up ပိတ်ပြီးရင် ပြန်ဝင်မည်)','This key was issued for a different Navotex app':'ဤ key သည် အခြား Navotex app အတွက် ထုတ်ထားသော key ဖြစ်သည်','Credit days':'အကြွေးရက်','Due date':'ပေးရမည့်ရက်','No due date':'ရက်သတ်မှတ်မထား','Due':'ပေးရမည့်ရက်','Overdue':'ရက်လွန်','Overdue invoices':'ရက်လွန်ဘောင်ချာများ','Overdue invoices (credit)':'ရက်လွန်အကြွေးဘောင်ချာများ','Credit — overdue':'အကြွေး — ရက်လွန်','days late':'ရက်နောက်ကျ','Days late':'နောက်ကျရက်','new credit is blocked':'အကြွေးအသစ်ပိတ်ထားသည်','This customer has overdue invoices. Collect payment first.':'ဤဝယ်သူတွင် ရက်လွန်ဘောင်ချာရှိသည်။ ငွေအရင်ကောက်ပါ။','Blank = use default':'အလွတ် = ပုံမှန်ရက်သုံး','Credit terms':'အကြွေးစည်းကမ်း','Days a customer has to pay. 0 = no due date. You can override it per customer and per sale.':'ဝယ်သူက ငွေပြန်ပေးရမည့်ရက်။ 0 = ရက်မသတ်မှတ်။ ဝယ်သူတစ်ယောက်ချင်းနှင့် အရောင်းတစ်ခုချင်းတွင် ပြင်နိုင်သည်။','Wholesale credit days':'လက်ကားအကြွေးရက်','Retail credit days':'လက်လီအကြွေးရက်','Allow credit on retail sales':'လက်လီအရောင်းတွင် အကြွေးခွင့်ပြုမည်','Block new credit when the customer has overdue invoices':'ရက်လွန်ဘောင်ချာရှိသောဝယ်သူကို အကြွေးအသစ်မရောင်းပါ','Modules':'Module များ','Turn off the parts you do not use. They disappear from the menu for everyone. Your data is kept and comes back when you turn a module on again. POS and Settings are always on.':'မသုံးသော အပိုင်းများကို ပိတ်ထားနိုင်သည်။ မီနူးမှ လူတိုင်းအတွက် ပျောက်သွားမည်။ ဒေတာမပျက်ပါ၊ ပြန်ဖွင့်လျှင် ပြန်ရမည်။ POS နှင့် Settings မှာ အမြဲဖွင့်ထားသည်။','Quick setup':'အမြန်ရွေးရန်','POS only':'POS သာ','Retail store':'လက်လီဆိုင်','Everything':'အားလုံး','Only Admin can edit Admin accounts':'Admin account ကို Admin သာ ပြင်နိုင်သည်','Only Admin can create or promote Admin accounts':'Admin account ဖန်တီးခြင်း/တိုးမြှင့်ခြင်းကို Admin သာ လုပ်နိုင်သည်','Admin and Manager can change it.':'Admin နှင့် Manager ပြောင်းနိုင်သည်။','Backup now':'ယခု Backup လုပ်ရန်','Admin: everything · Manager: all except License, Branches and Admin accounts · Cashier: POS, Sales, Cash Closing · Stock: Inventory, Purchase, Barcode':'Admin: အားလုံး · Manager: License၊ ဆိုင်ခွဲနှင့် Admin account မှလွဲ၍ အားလုံး · Cashier: POS, Sales, Cash Closing · Stock: Inventory, Purchase, Barcode','Units':'Unit များ','The list shown when you add a product. You can still type a new unit on the product itself.':'ပစ္စည်းထည့်သည့်အခါ ပြမည့်စာရင်း။ ပစ္စည်းပေါ်တွင် unit အသစ် ရိုက်ထည့်၍လည်း ရသေးသည်။','Add unit':'Unit ထည့်ရန်','Unit name (e.g. box, dozen, viss)':'Unit အမည် (ဥပမာ box, dozen, ပိဿာ)','Other units (e.g. 1 box = 12 pcs)':'အခြား Unit များ (ဥပမာ 1 box = 12 pcs)','Stock is counted in the main unit above. Prices left empty = main price × amount. The barcode is optional (scan a box barcode to sell a box).':'Stock ကို အပေါ်က အဓိက unit ဖြင့် ရေတွက်သည်။ ဈေးမထည့်လျှင် အဓိကဈေး × အရေအတွက်။ Barcode မဖြည့်လည်းရ (box barcode ဖတ်လျှင် box ရောင်းမည်)။','Fill the unit name and how many main units it contains':'Unit အမည်နှင့် အဓိက unit ဘယ်လောက်ပါသည်ကို ဖြည့်ပါ','Unit name already used: {n}':'Unit အမည်ထပ်နေသည်: {n}','main unit':'အဓိက unit','Expiry date (optional)':'Expire ရက် (မဖြည့်လည်းရ)','Batch no. (optional)':'Batch နံပါတ် (မဖြည့်လည်းရ)','Batch no.':'Batch နံပါတ်','Batches & expiry':'Batch နှင့် Expire','No expiry':'Expire မရှိ','days':'ရက်','Exp':'Exp','Expiry and batch apply only when stock is added. Removing stock takes the earliest-expiry batch first.':'Expire နှင့် Batch က stock ထည့်သည့်အခါမှသာ သက်ရောက်သည်။ stock နုတ်လျှင် ရက်အနီးဆုံး batch ကို အရင်နုတ်မည်။','{n}: batch expired on {d}':'{n}: batch ရက်ကုန်ပြီ ({d})','{n}: expires in {d} days':'{n}: {d} ရက်အတွင်း ရက်ကုန်မည်','Notifications':'သတိပေးချက်များ','Notifications (bell)':'သတိပေးချက် (ခေါင်းလောင်း)','Shown on the bell at the top. Low stock uses each product\'s Min stock alert.':'အပေါ်က ခေါင်းလောင်းတွင် ပြမည်။ Stock နည်းခြင်းကို ပစ္စည်းတစ်ခုချင်း၏ Min stock ဖြင့် တွက်သည်။','Warn about expiry this many days before':'Expire မတိုင်မီ ဘယ်နှရက်ကြိုပြမလဲ','Warn about credit due this many days before':'အကြွေးရက်မတိုင်မီ ဘယ်နှရက်ကြိုပြမလဲ','Expiry':'Expire','Credit due':'အကြွေးပေးရမည့်ရက်','{n} days late':'{n} ရက်နောက်ကျ','in {n} days':'{n} ရက်အတွင်း','days ago':'ရက်အကြာ','Expires today':'ယနေ့ ရက်ကုန်','Nothing is expiring soon':'ရက်ကုန်ခါနီး ပစ္စည်းမရှိပါ','No credit is due soon':'ပေးရမည့်ရက်နီးသော အကြွေးမရှိပါ','All products are above their minimum':'ပစ္စည်းအားလုံး အနည်းဆုံးထက် များနေသည်','Shut down':'ပိတ်မည်','English characters only (A-Z, a-z, 0-9, symbols)':'English စာလုံး၊ ဂဏန်းနှင့် သင်္ကေတများသာ ရိုက်ခွင့်ရှိသည်','Print preview':'ပရင့်ကြိုကြည့်ရန်','Show a print preview before printing receipts':'ဘောင်ချာ မပရင့်ခင် ကြိုကြည့်ရန် ပြမည်','Tip: to print straight to the default printer with no print dialog, start Chrome / Edge with the --kiosk-printing option.':'အကြံပြုချက် - Print dialog မပြဘဲ ပင်မ Printer သို့ တန်းထုတ်လိုလျှင် Chrome / Edge ကို --kiosk-printing ဖြင့် ဖွင့်ပါ။','Random 8-digit':'ဂဏန်း ၈ လုံး ကျပန်း','Generate 8-digit barcodes':'ဂဏန်း ၈ လုံး ဘားကုဒ်ဖန်တီးမည်','Assign a new 8-digit barcode to {n} products?':'ကုန်ပစ္စည်း {n} ခုကို ဂဏန်း ၈ လုံး ဘားကုဒ်အသစ် သတ်မှတ်မလား?','Auto (EAN-8 / EAN-13 if valid, else Code 128)':'အလိုအလျောက် (မှန်ရင် EAN-8 / EAN-13၊ မဟုတ်ရင် Code 128)','EAN-8 (8 digits)':'EAN-8 (ဂဏန်း ၈ လုံး)','Invalid EAN-8 (8 digits + valid check digit)':'EAN-8 မမှန်ပါ (ဂဏန်း ၈ လုံး + မှန်သော check digit)','Convert to 8-digit':'၈ လုံးသို့ ပြောင်းမည်','{n} products still use long 13-digit auto barcodes.':'ကုန်ပစ္စည်း {n} ခုမှာ ဂဏန်း ၁၃ လုံး ဘားကုဒ် ရှိနေသေးသည်။','Replace {n} auto-generated 13-digit barcodes with 8-digit ones? Labels already printed with the old codes will no longer match.':'အလိုအလျောက်ထုတ်ထားသော ဂဏန်း ၁၃ လုံး ဘားကုဒ် {n} ခုကို ၈ လုံးနှင့် အစားထိုးမလား? ဟောင်းဖြင့် ပရင့်ထုတ်ပြီးသော Label များ ကိုက်ညီတော့မည် မဟုတ်ပါ။','Barcodes converted':'ဘားကုဒ်များ ပြောင်းပြီးပါပြီ','Open a shift first':'ရှစ်ဖ်အရင်ဖွင့်ပါ','Cash in drawer':'အံဆွဲထဲရှိ ငွေသား','Category':'အမျိုးအစား','Required if category is Other':'အမျိုးအစားက Other ဖြစ်လျှင် လိုအပ်သည်','Print cash-out voucher':'ငွေထုတ် ဘောင်ချာ ပရင့်ထုတ်မည်','Amount is more than the cash in the drawer':'အံဆွဲထဲရှိ ငွေသားထက် ပိုနေသည်','Cash out saved':'ငွေထုတ်မှတ်တမ်း သိမ်းပြီးပါပြီ','Cash in saved':'ငွေထည့်မှတ်တမ်း သိမ်းပြီးပါပြီ','CASH OUT VOUCHER':'ငွေထုတ် ဘောင်ချာ','Approved by':'ခွင့်ပြုသူ','Received by':'လက်ခံသူ','Supplies':'ရုံးသုံးပစ္စည်း','Electricity / utilities':'မီးဖိုး / ဆက်စပ်ကုန်ကျစရိတ်','Delivery / transport':'ပို့ဆောင်ခ / ကားခ','Supplier payment':'ပေးသွင်းသူ ငွေပေးချေမှု','Salary advance':'လစာကြိုထုတ်','Other':'အခြား','Close the POS program?':'POS ပရိုဂရမ်ကို ပိတ်မလား?','POS has been closed':'POS ကို ပိတ်လိုက်ပါပြီ','You can now close this browser tab.':'ဘရောက်ဇာ tab ကို ပိတ်နိုင်ပါပြီ။','Open again':'ပြန်ဖွင့်မည်','Pick a day':'ရက်ရွေးရန်','Previous day':'ယခင်ရက်','Next day':'နောက်တရက်','Exit full screen':'မျက်နှာပြင်အပြည့်မှ ထွက်ရန်','Go full screen after sign in':'Login ဝင်ပြီးလျှင် မျက်နှာပြင်အပြည့် ဖွင့်ရန်','When set, exporting or restoring a backup asks for this password. Only Admin can change it.':'သတ်မှတ်ထားလျှင် Backup ထုတ်ရာ/ပြန်ယူရာတွင် ဤစကားဝှက်ကို မေးပါမည်။ အက်ဒမင်သာ ပြောင်းလဲနိုင်သည်။',
+'City':'မြို့','Retail receipt':'လက်လီ ဘောင်ချာ','Wholesale receipt':'လက်ကား ဘောင်ချာ','Document title (A5 / A4)':'စာရွက်ခေါင်းစဉ် (A5 / A4)','Signature lines (A5 / A4)':'လက်မှတ်ထိုးသည့်လိုင်း (A5 / A4)','Each paper size has its own layout: 58 mm compact, 80 mm table, A5 invoice, A4 formal invoice with customer box and signatures.':'စက္ကူအရွယ်တစ်ခုချင်းစီ ပုံစံမတူပါ — 58mm ကျစ်လျစ်၊ 80mm ဇယား၊ A5 ပြေစာ၊ A4 တရားဝင်ပြေစာ (ဝယ်သူအကွက်နှင့် လက်မှတ်ပါ)။','Bill to':'ဝယ်သူ','Prepared by':'ပြုစုသူ','RECEIPT':'ဘောင်ချာ','Retail + Wholesale':'လက်လီ + လက်ကား','Retail only':'လက်လီသာ','Wholesale only':'လက်ကားသာ','Wholesale sales — each invoice':'လက်ကားရောင်းချမှု — ပြေစာအလိုက်','Sales by city (wholesale)':'မြို့အလိုက် ရောင်းချမှု (လက်ကား)','Import Excel':'Excel တင်သွင်းမည်','Export Excel':'Excel ထုတ်မည်','Import products from Excel':'Excel မှ ကုန်ပစ္စည်းတင်သွင်းမည်','Choose Excel file':'Excel ဖိုင်ရွေးမည်','Could not read this Excel file':'ဤ Excel ဖိုင်ကို မဖတ်နိုင်ပါ','The file needs a "name" column':'ဖိုင်တွင် "name" ကော်လံ လိုအပ်သည်','Shift / Cash Closing':'Shift / Cash Closing','Required before selling':'ရောင်းမည့်အခါ ဖွင့်ရမည်','Optional (use only when needed)':'မဖွင့်လည်းရောင်းနိုင် (လိုမှသုံး)','Off (hide Cash Closing)':'ပိတ်ထားမည် (Cash Closing ဖျောက်)','Could not load Google sign-in. Check the internet connection.':'Google sign-in ကို မဖွင့်နိုင်ပါ။ အင်တာနက်စစ်ပါ။','Google Client ID is not set':'Google Client ID မထည့်ရသေးပါ','Google sign-in needs the app to be opened from an https:// address (not a local file).':'Google ချိတ်ဆက်ရန် app ကို https:// လိပ်စာမှ ဖွင့်ရပါမည် (ကွန်ပျူတာထဲက ဖိုင်ကို တိုက်ရိုက်ဖွင့်လို့မရပါ)။','Google sign-in popup was blocked':'Google sign-in popup ကို ပိတ်ထားသည်','Sending to Google Sheets…':'Google Sheets သို့ ပို့နေသည်…','Saved to Google Sheets':'Google Sheets ထဲ သိမ်းပြီး','Google Sheets failed: {n}':'Google Sheets မအောင်မြင်ပါ: {n}','Not connected':'မချိတ်ရသေးပါ','Auto backup goes to Google Drive':'Auto backup ကို Google Drive သို့ပို့သည်','Google OAuth Client ID':'Google OAuth Client ID','Reconnect / change Google account':'Google အကောင့် ပြန်ချိတ်/ပြောင်း','Connect Google account':'Google အကောင့်ချိတ်မည်','Stop using Google Drive':'Google Drive မသုံးတော့ပါ','Use Google Drive for auto backup':'Auto backup ကို Google Drive သုံးမည်','Disconnect':'ချိတ်ဆက်မှုဖြုတ်မည်','Google account connected':'Google အကောင့် ချိတ်ပြီး','Send to Google Sheets':'Google Sheets သို့ပို့မည်','Google Sheets':'Google Sheets','The app can only see files it created itself.':'App က ကိုယ်ဖန်တီးထားတဲ့ဖိုင်များကိုသာ မြင်နိုင်သည်။','Licensed to (Customer)':'လိုင်စင်ရသူ (ဝယ်သူ)','Store type':'ဆိုင်အမျိုးအစား','Branches allowed (Store limit)':'ခွင့်ပြုဆိုင်ခွဲ (ဆိုင်အရေအတွက်ကန့်သတ်ချက်)','Use the browser menu → Install app / Add to Home Screen':'Browser မီနူးမှ Install app / Add to Home Screen ကို သုံးပါ','A new version is ready — tap here to reload':'ဗားရှင်းသစ် အဆင်သင့်ဖြစ်ပါပြီ — ဤနေရာကိုနှိပ်ပြီး ပြန်ဖွင့်ပါ','Version':'ဗားရှင်း','Works offline':'အင်တာနက်မရှိလည်း အလုပ်လုပ်သည်','Install app on this device':'ဤစက်ထဲ App အဖြစ် Install လုပ်မည်','Cart':'ခြင်းတောင်း','Keep full screen (return to full screen after a pop-up closes)':'Full screen အမြဲထားမည် (pop-up ပိတ်ပြီးရင် ပြန်ဝင်မည်)','This key was issued for a different Navotex app':'ဤ key သည် အခြား Navotex app အတွက် ထုတ်ထားသော key ဖြစ်သည်','Credit days':'အကြွေးရက်','Due date':'ပေးရမည့်ရက်','No due date':'ရက်သတ်မှတ်မထား','Due':'ပေးရမည့်ရက်','Overdue':'ရက်လွန်','Overdue invoices':'ရက်လွန်ဘောင်ချာများ','Overdue invoices (credit)':'ရက်လွန်အကြွေးဘောင်ချာများ','Credit — overdue':'အကြွေး — ရက်လွန်','days late':'ရက်နောက်ကျ','Days late':'နောက်ကျရက်','new credit is blocked':'အကြွေးအသစ်ပိတ်ထားသည်','This customer has overdue invoices. Collect payment first.':'ဤဝယ်သူတွင် ရက်လွန်ဘောင်ချာရှိသည်။ ငွေအရင်ကောက်ပါ။','Blank = use default':'အလွတ် = ပုံမှန်ရက်သုံး','Credit terms':'အကြွေးစည်းကမ်း','Days a customer has to pay. 0 = no due date. You can override it per customer and per sale.':'ဝယ်သူက ငွေပြန်ပေးရမည့်ရက်။ 0 = ရက်မသတ်မှတ်။ ဝယ်သူတစ်ယောက်ချင်းနှင့် အရောင်းတစ်ခုချင်းတွင် ပြင်နိုင်သည်။','Wholesale credit days':'လက်ကားအကြွေးရက်','Retail credit days':'လက်လီအကြွေးရက်','Allow credit on retail sales':'လက်လီအရောင်းတွင် အကြွေးခွင့်ပြုမည်','Block new credit when the customer has overdue invoices':'ရက်လွန်ဘောင်ချာရှိသောဝယ်သူကို အကြွေးအသစ်မရောင်းပါ','Modules':'Module များ','Turn off the parts you do not use. They disappear from the menu for everyone. Your data is kept and comes back when you turn a module on again. POS and Settings are always on.':'မသုံးသော အပိုင်းများကို ပိတ်ထားနိုင်သည်။ မီနူးမှ လူတိုင်းအတွက် ပျောက်သွားမည်။ ဒေတာမပျက်ပါ၊ ပြန်ဖွင့်လျှင် ပြန်ရမည်။ POS နှင့် Settings မှာ အမြဲဖွင့်ထားသည်။','Quick setup':'အမြန်ရွေးရန်','POS only':'POS သာ','Retail store':'လက်လီဆိုင်','Everything':'အားလုံး','Only Admin can edit Admin accounts':'Admin account ကို Admin သာ ပြင်နိုင်သည်','Only Admin can create or promote Admin accounts':'Admin account ဖန်တီးခြင်း/တိုးမြှင့်ခြင်းကို Admin သာ လုပ်နိုင်သည်','Admin and Manager can change it.':'Admin နှင့် Manager ပြောင်းနိုင်သည်။','Backup now':'ယခု Backup လုပ်ရန်','Admin: everything · Manager: all except License, Branches and Admin accounts · Cashier: POS, Sales, Cash Closing · Stock: Inventory, Purchase, Barcode':'Admin: အားလုံး · Manager: License၊ ဆိုင်ခွဲနှင့် Admin account မှလွဲ၍ အားလုံး · Cashier: POS, Sales, Cash Closing · Stock: Inventory, Purchase, Barcode','Units':'Unit များ','The list shown when you add a product. You can still type a new unit on the product itself.':'ပစ္စည်းထည့်သည့်အခါ ပြမည့်စာရင်း။ ပစ္စည်းပေါ်တွင် unit အသစ် ရိုက်ထည့်၍လည်း ရသေးသည်။','Add unit':'Unit ထည့်ရန်','Unit name (e.g. box, dozen, viss)':'Unit အမည် (ဥပမာ box, dozen, ပိဿာ)','Other units (e.g. 1 box = 12 pcs)':'အခြား Unit များ (ဥပမာ 1 box = 12 pcs)','Stock is counted in the main unit above. Prices left empty = main price × amount. The barcode is optional (scan a box barcode to sell a box).':'Stock ကို အပေါ်က အဓိက unit ဖြင့် ရေတွက်သည်။ ဈေးမထည့်လျှင် အဓိကဈေး × အရေအတွက်။ Barcode မဖြည့်လည်းရ (box barcode ဖတ်လျှင် box ရောင်းမည်)။','Fill the unit name and how many main units it contains':'Unit အမည်နှင့် အဓိက unit ဘယ်လောက်ပါသည်ကို ဖြည့်ပါ','Unit name already used: {n}':'Unit အမည်ထပ်နေသည်: {n}','main unit':'အဓိက unit','Expiry date (optional)':'Expire ရက် (မဖြည့်လည်းရ)','Batch no. (optional)':'Batch နံပါတ် (မဖြည့်လည်းရ)','Batch no.':'Batch နံပါတ်','Batches & expiry':'Batch နှင့် Expire','No expiry':'Expire မရှိ','days':'ရက်','Exp':'Exp','Expiry and batch apply only when stock is added. Removing stock takes the earliest-expiry batch first.':'Expire နှင့် Batch က stock ထည့်သည့်အခါမှသာ သက်ရောက်သည်။ stock နုတ်လျှင် ရက်အနီးဆုံး batch ကို အရင်နုတ်မည်။','{n}: batch expired on {d}':'{n}: batch ရက်ကုန်ပြီ ({d})','{n}: expires in {d} days':'{n}: {d} ရက်အတွင်း ရက်ကုန်မည်','Notifications':'သတိပေးချက်များ','Notifications (bell)':'သတိပေးချက် (ခေါင်းလောင်း)','Shown on the bell at the top. Low stock uses each product\'s Min stock alert.':'အပေါ်က ခေါင်းလောင်းတွင် ပြမည်။ Stock နည်းခြင်းကို ပစ္စည်းတစ်ခုချင်း၏ Min stock ဖြင့် တွက်သည်။','Warn about expiry this many days before':'Expire မတိုင်မီ ဘယ်နှရက်ကြိုပြမလဲ','Warn about credit due this many days before':'အကြွေးရက်မတိုင်မီ ဘယ်နှရက်ကြိုပြမလဲ','Expiry':'Expire','Credit due':'အကြွေးပေးရမည့်ရက်','{n} days late':'{n} ရက်နောက်ကျ','in {n} days':'{n} ရက်အတွင်း','days ago':'ရက်အကြာ','Expires today':'ယနေ့ ရက်ကုန်','Nothing is expiring soon':'ရက်ကုန်ခါနီး ပစ္စည်းမရှိပါ','No credit is due soon':'ပေးရမည့်ရက်နီးသော အကြွေးမရှိပါ','All products are above their minimum':'ပစ္စည်းအားလုံး အနည်းဆုံးထက် များနေသည်','Add variant':'Variant ထည့်ရန်','All products have enough stock':'ပစ္စည်းအားလုံး လက်ကျန်လုံလောက်ပါသည်','Buying price increased':'ဝယ်ဈေး တက်သွားသည်','Buying price went up: {n}. Check the selling price.':'ဝယ်ဈေး တက်သွားသည်: {n}။ ရောင်းဈေးကို စစ်ဆေးပါ။','By category':'Category အလိုက်','COD waiting to be collected':'COD ငွေ ကောက်ခံရန်ကျန်','Change the selling price of "{n}" from {a} to {b}?':'"{n}" ရဲ့ ရောင်းဈေးကို {a} မှ {b} သို့ ပြောင်းမလား။','Choose variant':'Variant ရွေးပါ','Courier':'ပို့ဆောင်သူ (Courier)','Create purchase order from this list':'ဒီစာရင်းကနေ ဝယ်ယူမှု Order ဖန်တီးမည်','Credit given today':'ဒီနေ့ ပေးထားသော အကြွေး','Delete category':'Category ဖျက်မည်','Delete selected':'ရွေးထားသည်များ ဖျက်မည်','Delete {n} selected products?':'ရွေးထားသော ပစ္စည်း {n} ခုကို ဖျက်မလား။','Delivery code':'Delivery Code','Delivery status':'Delivery အခြေအနေ','Delivery status updated':'Delivery အခြေအနေ ပြင်ပြီးပါပြီ','Done':'ပြီးပါပြီ','Edit price':'ဈေးပြင်မည်','Enter a name for every variant':'Variant တိုင်းအတွက် အမည်ထည့်ပါ','Everything has sold recently':'မကြာသေးမီက အားလုံးရောင်းရပါသည်','Gross margin':'အမြတ်ရာခိုင်နှုန်း','Internal note (not printed)':'Internal note (ဘောင်ချာတွင် မပါ)','Margin':'အမြတ်%','Move these products to':'ဒီပစ္စည်းတွေကို ရွှေ့မည့်နေရာ','Near expiry / expired':'သက်တမ်းကုန်ခါနီး / ကုန်ပြီး','No buying price changes':'ဝယ်ဈေးပြောင်းလဲမှု မရှိပါ','No category':'Category မရှိ','No cost increases':'ဝယ်ဈေးတက်သည်များ မရှိပါ','No customer sales in this period':'ဒီကာလမှာ ဖောက်သည်ရောင်းချမှု မရှိပါ','No lapsed customers':'ကြာကြာမလာသော ဖောက်သည် မရှိပါ','No transfers found':'Transfer မှတ်တမ်း မတွေ့ပါ','No variants — the product is sold as a single item.':'Variant မရှိပါ — ပစ္စည်းကို တစ်မျိုးတည်းအဖြစ် ရောင်းမည်။','Not allowed':'ခွင့်မပြုပါ','Not seen for 30+ days':'၃၀ ရက်ကျော် မလာသော','Not sold in':'မရောင်းရသည့်ကာလ','PIN reset':'PIN ပြန်သတ်မှတ်ပြီးပါပြီ','Payments received today':'ဒီနေ့ လက်ခံရသော ငွေ','Price updated':'ဈေးပြင်ပြီးပါပြီ','Purchases received in this period':'ဒီကာလ လက်ခံရရှိသော ဝယ်ယူမှု','Reset PIN':'PIN ပြန်သတ်မှတ်','Reset the lock PIN of "{n}"? They will create a new PIN the next time they lock the screen.':'"{n}" ရဲ့ Lock PIN ကို ပြန်သတ်မှတ်မလား။ နောက်တစ်ခါ Lock လုပ်တဲ့အခါ PIN အသစ် ဖန်တီးရပါမယ်။','Sales (incl. tax)':'ရောင်းအား (အခွန်ပါ)','Search receipt, product, note or delivery code':'ဘောင်ချာ၊ ပစ္စည်း၊ note သို့ delivery code ရှာရန်','Search transfer no., branch, product or note':'Transfer နံပါတ်၊ ဆိုင်ခွဲ၊ ပစ္စည်း သို့ note ရှာရန်','Select':'ရွေးမည်','Sell price':'ရောင်းဈေး','Sent by':'ပို့သူ','This delivery code is already used. Use it again?':'ဒီ Delivery Code ကို သုံးပြီးသားပါ။ ထပ်သုံးမလား။','This variant still has stock. Set its stock to 0 first.':'ဒီ Variant မှာ stock ကျန်သေးသည်။ အရင် stock ကို 0 လုပ်ပါ။','Today: {n} sales, {a} (profit {p})':'ဒီနေ့: ရောင်းချမှု {n} ခု၊ {a} (အမြတ် {p})','Top buyers':'ဝယ်အားအကောင်းဆုံး','Top today':'ဒီနေ့ အကောင်းဆုံး','Total credit outstanding':'အကြွေးကျန်စုစုပေါင်း','Transfer no.':'Transfer နံပါတ်','Unassigned stock':'Variant မခွဲရသေးသော stock','Use product variants (size / colour …)':'ပစ္စည်း Variants သုံးမည် (size / အရောင် …)','Variant':'Variant','Variant name':'Variant အမည်','Variant name already used: {n}':'Variant အမည် သုံးပြီးသား: {n}','Variants':'Variants','Voided sales':'ပယ်ဖျက်ထားသော ရောင်းချမှု','auto SKU':'SKU အလိုအလျောက်','deleted':'ဖျက်ပြီး','e.g. Red / 500ml':'ဥပမာ အနီ / 500ml','not deducted — stock purchases are counted through cost of goods sold':'မနှုတ်ထားပါ — ဝယ်ယူစရိတ်ကို ရောင်းရသော ပစ္စည်းကုန်ကျစရိတ်ထဲ ပါပြီးသား','optional':'မဖြည့်လည်းရ','same price, separate barcode and stock':'ဈေးတူ၊ barcode နဲ့ stock သီးသန့်','set to Inactive':'Inactive လုပ်ထား','type the quantity of each variant (it is taken from this stock).':'Variant တစ်ခုချင်း အရေအတွက် ထည့်ပါ (ဒီ stock ထဲကနေ ယူပါမယ်)။','variants':'variants','{n} items should be re-ordered soon (stock lasts 14 days or less, based on the last 30 days of sales)':'ပစ္စည်း {n} မျိုး မကြာမီ ပြန်မှာသင့်သည် (လွန်ခဲ့သော ၃၀ ရက်ရောင်းအားအရ stock ၁၄ ရက်အောက်သာ ခံမည်)','{n} of them have history and will be set to Inactive instead of deleted.':'ထိုအထဲက {n} ခုမှာ မှတ်တမ်းရှိသဖြင့် မဖျက်ဘဲ Inactive လုပ်မည်။','{n} products became more expensive to buy in the last 60 days':'လွန်ခဲ့သော ၆၀ ရက်အတွင်း ဝယ်ဈေးတက်သော ပစ္စည်း {n} မျိုး','{n} products have not sold in {d} days — stock value {v}':'ပစ္စည်း {n} မျိုး {d} ရက်အတွင်း မရောင်းရ — stock တန်ဖိုး {v}','{p} compared with {q}: sales {c}':'{p} ကို {q} နဲ့ နှိုင်းယှဉ်: ရောင်းအား {c}','{p} gives the most profit: {a}':'{p} က အမြတ်အများဆုံး: {a}','{p}: best seller — {q} sold, {a}':'{p}: အရောင်းအကောင်းဆုံး — {q} ရောင်းရ၊ {a}','{p}: loss about {a} after expenses':'{p}: အသုံးစရိတ်နှုတ်ပြီး အရှုံး ခန့်မှန်း {a}','{p}: most profit — {a}':'{p}: အမြတ်အများဆုံး — {a}','{p}: profit about {a} after expenses':'{p}: အသုံးစရိတ်နှုတ်ပြီး အမြတ် ခန့်မှန်း {a}','{p}: top customer — {c}, {a}':'{p}: ဝယ်အားအကောင်းဆုံး ဖောက်သည် — {c}၊ {a}','Pending':'စောင့်ဆိုင်း','Shipped':'ပို့နေသည်','Delivered':'ပို့ပြီး','Best sellers':'အရောင်းအကောင်းဆုံး','Most profitable':'အမြတ်အများဆုံး','Slow movers & expiry':'ရောင်းမကောင်း & သက်တမ်း','Profit & loss':'အရှုံးအမြတ်','Reorder suggestions':'ပြန်မှာသင့်စာရင်း','Compare periods':'ကာလနှိုင်းယှဉ်','Profit breakdown':'အမြတ်ခွဲခြမ်း','Cost changes':'ဝယ်ဈေးပြောင်း','Daily summary':'နေ့စဉ်အကျဉ်းချုပ်','Store':'ဆိုင်','Retail / Wholesale':'လက်လီ / လက်ကား','Insights':'Insights','Delivery code (COD orders)':'Delivery Code (COD အော်ဒါ)','Received by':'လက်ခံသူ','Move':'ရွှေ့','Value (cost)':'တန်ဖိုး (ကုန်ကျ)','Batch':'Batch','Sales (net)':'ရောင်းအား (အခွန်မပါ)','Cost of goods sold':'ရောင်းပစ္စည်းကုန်ကျစရိတ်','Other cash expenses':'အခြားငွေသားအသုံးစရိတ်','Net profit':'အသားတင်အမြတ်','Item':'အချက်','Sold / day':'တစ်ရက်ရောင်းနှုန်း','Lasts':'ခံမည့်ရက်','Suggested qty (30 days)':'အကြံပြုအရေအတွက် (၃၀ ရက်စာ)','This period':'ဒီကာလ','Previous':'ယခင်ကာလ','Last purchase':'နောက်ဆုံးဝယ်ယူ','Days ago':'ရက်အကြာ','Total spent':'စုစုပေါင်းသုံးငွေ','Old cost':'ဝယ်ဈေးအဟောင်း','New cost':'ဝယ်ဈေးအသစ်','Margin now':'လက်ရှိအမြတ်%','Suggested price':'အကြံပြုရောင်းဈေး','Method':'နည်းလမ်း','1 store':'ဆိုင် ၁ ဆိုင်','3 stores in total':'စုစုပေါင်း ၃ ဆိုင်','80mm and A5 only, no A4':'80mm နှင့် A5 သာ၊ A4 မရ','All sizes':'အရွယ်အစား အားလုံး','All stores':'ဆိုင်အားလုံး','Arrange':'နေရာချ','Backups go to a Drive folder named "{n}" and report exports to "Navotex Exports". The app can only see files it created itself.':'Backup များကို "{n}" အမည်ရှိ Drive folder ထဲသို့၊ Report များကို "Navotex Exports" ထဲသို့ သိမ်းပါမည်။ App သည် ကိုယ်တိုင်ဖန်တီးသောဖိုင်များကိုသာ မြင်နိုင်ပါသည်။','Contact Navotex POS at the phone number below and send: your name, store name, store type, Plan (Standard, Pro or Premium), the number of branches (if you have any), and the Install ID shown on this screen.':'အောက်ပါဖုန်းနံပါတ်သို့ ဆက်သွယ်ပြီး ဝယ်ယူသူအမည်၊ ဆိုင်နာမည်၊ ဆိုင်အမျိုးအစား၊ Plan (Standard, Pro, Premium)၊ ဆိုင်ခွဲရှိပါက ဆိုင်ခွဲအရေအတွက်နှင့် ဤစာမျက်နှာပေါ်ရှိ Install ID ကို ပေးပို့ပါ။','During the trial period, retail and wholesale are both fully available. After you buy, on the Standard plan new sales can only be retail. Wholesale records you already created are kept.':'စမ်းသပ်အသုံးပြုကာလတွင် လက်လီ/လက်ကား နှစ်မျိုးလုံး အပြည့်အဝ သုံးနိုင်ပါသည်။ ဝယ်ယူပြီးနောက် Standard Plan တွင် အသစ်ရောင်းသည်များကို လက်လီသာ ရောင်းနိုင်ပါမည်။ ဖန်တီးပြီးသား လက်ကားမှတ်တမ်းများ ကျန်ရှိနေပါမည်။','Favorite':'အနှစ်သက်ဆုံး','Favorites':'အနှစ်သက်ဆုံး','How to activate Navotex POS & Inventory Software':'Navotex POS & Inventory Software ကို Activate လုပ်နည်း','Keep your Admin account passwords safe.':'Admin အကောင့် Password များကို သေချာမှတ်သားထားပါ။','Needs the app to be opened from an https:// address, and a free Google Cloud OAuth Client ID (Web application) with this address added under Authorized JavaScript origins and the Google Drive API enabled.':'App ကို https:// လိပ်စာမှ ဖွင့်ရန်နှင့် အခမဲ့ Google Cloud OAuth Client ID (Web application) လိုအပ်ပါသည်။ ဤလိပ်စာကို Authorized JavaScript origins တွင်ထည့်ပြီး Google Drive API ကို ဖွင့်ထားရပါမည်။','Net profit (after expenses)':'အသားတင်အမြတ် (ကုန်ကျစရိတ်နုတ်ပြီး)','New category…':'Category အသစ်…','Not available (new sales are retail only; old records kept)':'မရနိုင်ပါ (အသစ်ရောင်းသည်များ လက်လီသာ၊ မှတ်တမ်းအဟောင်း ကျန်ရှိ)','Nothing is out of stock':'ကုန်နေသော ပစ္စည်း မရှိပါ','Paste the license key into the key box and press Activate. Your data stays exactly as it is.':'ရရှိလာသော လိုင်စင်ကီးကို ကီးထည့်ရန်အကွက်ထဲ ကူးထည့်ပြီး Activate နှိပ်ပါ။ သင့်ဒေတာများ မပြောင်းလဲဘဲ ဆက်ရှိနေပါမည်။','Plans':'Plan များ','Pro or Premium plan':'Pro သို့မဟုတ် Premium Plan','Quick guide':'အသုံးပြုနည်း အကျဉ်း','Receipts':'ဘောင်ချာများ','Set a separate Backup & Restore password. It is required for every backup and every restore. It stops other people from taking a backup without permission, so your data cannot be copied or leaked.':'Backup & Restore အတွက် သီးခြား Password ထားပါ။ Backup လုပ်တိုင်း Restore လုပ်တိုင်း ထို Password လိုအပ်ပါသည်။ ခွင့်ပြုချက်မရှိဘဲ Backup ထုတ်ယူခြင်းကို တားဆီးပြီး သင့်ဒေတာ ပျံ့နှံ့ခြင်းမှ ကာကွယ်ပေးပါသည်။','Shown on the bell at the top. Low stock uses each product\'s Min stock alert.':'အပေါ်ဘက် ခေါင်းလောင်းတွင် ပြပါမည်။ Low stock သည် ပစ္စည်းတစ်ခုချင်း၏ Min stock alert ကို အသုံးပြုပါသည်။','Stock value by store (cost)':'ဆိုင်အလိုက် Stock တန်ဖိုး (ရင်းနှီးဈေး)','Stores':'ဆိုင်များ','Tap ☆ on a product to add it to Favorites':'ပစ္စည်းပေါ်ရှိ ☆ ကိုနှိပ်၍ အနှစ်သက်ဆုံးထဲ ထည့်ပါ','Type the new category name':'Category အသစ်အမည် ရိုက်ထည့်ပါ','When set, exporting or restoring a backup asks for this password. Admin and Manager can change it.':'သတ်မှတ်ထားပါက Backup ထုတ်ယူ/ပြန်လည်ထည့်သွင်းရာတွင် ဤ Password ကို တောင်းပါမည်။ Admin နှင့် Manager ပြောင်းနိုင်ပါသည်။','Wrong password':'Password မှားနေပါသည်','Shut down':'ပိတ်မည်','English characters only (A-Z, a-z, 0-9, symbols)':'English စာလုံး၊ ဂဏန်းနှင့် သင်္ကေတများသာ ရိုက်ခွင့်ရှိသည်','Print preview':'ပရင့်ကြိုကြည့်ရန်','Show a print preview before printing receipts':'ဘောင်ချာ မပရင့်ခင် ကြိုကြည့်ရန် ပြမည်','Tip: to print straight to the default printer with no print dialog, start Chrome / Edge with the --kiosk-printing option.':'အကြံပြုချက် - Print dialog မပြဘဲ ပင်မ Printer သို့ တန်းထုတ်လိုလျှင် Chrome / Edge ကို --kiosk-printing ဖြင့် ဖွင့်ပါ။','Random 8-digit':'ဂဏန်း ၈ လုံး ကျပန်း','Generate 8-digit barcodes':'ဂဏန်း ၈ လုံး ဘားကုဒ်ဖန်တီးမည်','Assign a new 8-digit barcode to {n} products?':'ကုန်ပစ္စည်း {n} ခုကို ဂဏန်း ၈ လုံး ဘားကုဒ်အသစ် သတ်မှတ်မလား?','Auto (EAN-8 / EAN-13 if valid, else Code 128)':'အလိုအလျောက် (မှန်ရင် EAN-8 / EAN-13၊ မဟုတ်ရင် Code 128)','EAN-8 (8 digits)':'EAN-8 (ဂဏန်း ၈ လုံး)','Invalid EAN-8 (8 digits + valid check digit)':'EAN-8 မမှန်ပါ (ဂဏန်း ၈ လုံး + မှန်သော check digit)','Convert to 8-digit':'၈ လုံးသို့ ပြောင်းမည်','{n} products still use long 13-digit auto barcodes.':'ကုန်ပစ္စည်း {n} ခုမှာ ဂဏန်း ၁၃ လုံး ဘားကုဒ် ရှိနေသေးသည်။','Replace {n} auto-generated 13-digit barcodes with 8-digit ones? Labels already printed with the old codes will no longer match.':'အလိုအလျောက်ထုတ်ထားသော ဂဏန်း ၁၃ လုံး ဘားကုဒ် {n} ခုကို ၈ လုံးနှင့် အစားထိုးမလား? ဟောင်းဖြင့် ပရင့်ထုတ်ပြီးသော Label များ ကိုက်ညီတော့မည် မဟုတ်ပါ။','Barcodes converted':'ဘားကုဒ်များ ပြောင်းပြီးပါပြီ','Open a shift first':'ရှစ်ဖ်အရင်ဖွင့်ပါ','Cash in drawer':'အံဆွဲထဲရှိ ငွေသား','Category':'အမျိုးအစား','Required if category is Other':'အမျိုးအစားက Other ဖြစ်လျှင် လိုအပ်သည်','Print cash-out voucher':'ငွေထုတ် ဘောင်ချာ ပရင့်ထုတ်မည်','Amount is more than the cash in the drawer':'အံဆွဲထဲရှိ ငွေသားထက် ပိုနေသည်','Cash out saved':'ငွေထုတ်မှတ်တမ်း သိမ်းပြီးပါပြီ','Cash in saved':'ငွေထည့်မှတ်တမ်း သိမ်းပြီးပါပြီ','CASH OUT VOUCHER':'ငွေထုတ် ဘောင်ချာ','Approved by':'ခွင့်ပြုသူ','Received by':'လက်ခံသူ','Supplies':'ရုံးသုံးပစ္စည်း','Electricity / utilities':'မီးဖိုး / ဆက်စပ်ကုန်ကျစရိတ်','Delivery / transport':'ပို့ဆောင်ခ / ကားခ','Supplier payment':'ပေးသွင်းသူ ငွေပေးချေမှု','Salary advance':'လစာကြိုထုတ်','Other':'အခြား','Close the POS program?':'POS ပရိုဂရမ်ကို ပိတ်မလား?','POS has been closed':'POS ကို ပိတ်လိုက်ပါပြီ','You can now close this browser tab.':'ဘရောက်ဇာ tab ကို ပိတ်နိုင်ပါပြီ။','Open again':'ပြန်ဖွင့်မည်','Pick a day':'ရက်ရွေးရန်','Previous day':'ယခင်ရက်','Next day':'နောက်တရက်','Exit full screen':'မျက်နှာပြင်အပြည့်မှ ထွက်ရန်','Go full screen after sign in':'Login ဝင်ပြီးလျှင် မျက်နှာပြင်အပြည့် ဖွင့်ရန်','When set, exporting or restoring a backup asks for this password. Only Admin can change it.':'သတ်မှတ်ထားလျှင် Backup ထုတ်ရာ/ပြန်ယူရာတွင် ဤစကားဝှက်ကို မေးပါမည်။ အက်ဒမင်သာ ပြောင်းလဲနိုင်သည်။',
 'Wrong backup password':'Backup စကားဝှက် မှားနေပါသည်','Wrong username or password':'အသုံးပြုသူအမည် သို့မဟုတ် စကားဝှက် မှားနေပါသည်','Yesterday':'မနေ့က',
 'admin':'အက်ဒမင်','after discount, excl. tax':'လျှော့ဈေးနုတ်ပြီး၊ အခွန်မပါ','auto':'အလိုအလျောက်','basic':'အခြေခံ','cashier':'ငွေကိုင်','e.g. change top-up':'ဥပမာ - အမ်းငွေအတွက် ထပ်ထည့်သည်','e.g. electricity, delivery, supplies':'ဥပမာ - မီးဖိုး၊ ပို့ဆောင်ခ၊ ရုံးသုံးပစ္စည်း',
 'incl.':'အခွန်ပါ','items':'ခု','labels':'ကတ်ပြား','low / out of stock':'လက်ကျန်နည်း / ကုန်သွားသည်','manager':'မန်နေဂျာ','margin':'အမြတ်ရာခိုင်နှုန်း','no barcode':'ဘားကုဒ်မရှိ','not set':'မသတ်မှတ်ရသေး','open shift(s)':'ဖွင့်ထားသောရှစ်ဖ်','orders':'ဘောင်ချာ','products':'ကုန်ပစ္စည်း',
