@@ -481,19 +481,19 @@ input[type=number]{-moz-appearance:textfield}
 @media(min-width:981px){.pos{grid-template-columns:minmax(0,1fr) 410px}}.pos-l{min-width:0}#posCats{min-width:0}
 #posCats.chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}#posCats.chips::-webkit-scrollbar{display:none}#posCats .chip{flex:none}.pc .nm{padding-right:30px}
 /* ---- v1.0.11: modern colored KPI cards, centered bell badge */
-.card.kpi{position:relative;overflow:hidden;border:0!important;border-radius:18px;padding:20px 18px;color:#fff;box-shadow:0 8px 22px -10px rgba(0,0,0,.45)!important;isolation:isolate}
-.card.kpi:hover{border:0!important;transform:translateY(-1px)}
+.card.kpi:is(.c1,.c2,.c3,.c4){position:relative;overflow:hidden;border:0!important;border-radius:18px;padding:20px 18px;color:#fff;box-shadow:0 8px 22px -10px rgba(0,0,0,.45)!important;isolation:isolate}
+.card.kpi:is(.c1,.c2,.c3,.c4):hover{border:0!important;transform:translateY(-1px)}
 .card.kpi.c1{background:linear-gradient(135deg,#6366f1,#8b5cf6)}
 .card.kpi.c2{background:linear-gradient(135deg,#10b981,#047857)}
 .card.kpi.c3{background:linear-gradient(135deg,#0ea5e9,#2563eb)}
 .card.kpi.c4{background:linear-gradient(135deg,#f59e0b,#ef4444)}
-.card.kpi .kic{position:absolute;right:-8px;bottom:-12px;width:84px;height:84px;border-radius:0;background:none!important;opacity:.16;z-index:-1;display:block}
-.card.kpi .kic .ico{width:84px;height:84px;stroke-width:1.6}
-.card.kpi .stat{position:relative;z-index:1}
-.card.kpi .stat .l{color:rgba(255,255,255,.88);font-weight:600}
-.card.kpi .stat .v,.card.kpi .stat .v.warn,.card.kpi .stat .v.err{color:#fff;font-size:26px;text-shadow:0 1px 2px rgba(0,0,0,.18)}
-.card.kpi .stat .s{color:rgba(255,255,255,.85)}
-.card.kpi .badge,.card.kpi .badge.ok,.card.kpi .badge.warn{background:rgba(255,255,255,.22);color:#fff;border:1px solid rgba(255,255,255,.3);padding:2px 8px;text-transform:none;letter-spacing:0;font-size:11px;font-weight:700;width:fit-content}
+.card.kpi:is(.c1,.c2,.c3,.c4) .kic{position:absolute;right:-8px;bottom:-12px;width:84px;height:84px;border-radius:0;background:none!important;opacity:.16;z-index:-1;display:block}
+.card.kpi:is(.c1,.c2,.c3,.c4) .kic .ico{width:84px;height:84px;stroke-width:1.6}
+.card.kpi:is(.c1,.c2,.c3,.c4) .stat{position:relative;z-index:1}
+.card.kpi:is(.c1,.c2,.c3,.c4) .stat .l{color:rgba(255,255,255,.88);font-weight:600}
+.card.kpi:is(.c1,.c2,.c3,.c4) .stat .v,.card.kpi:is(.c1,.c2,.c3,.c4) .stat .v.warn,.card.kpi:is(.c1,.c2,.c3,.c4) .stat .v.err{color:#fff;font-size:26px;text-shadow:0 1px 2px rgba(0,0,0,.18)}
+.card.kpi:is(.c1,.c2,.c3,.c4) .stat .s{color:rgba(255,255,255,.85)}
+.card.kpi:is(.c1,.c2,.c3,.c4) .badge,.card.kpi:is(.c1,.c2,.c3,.c4) .badge.ok,.card.kpi:is(.c1,.c2,.c3,.c4) .badge.warn{background:rgba(255,255,255,.22);color:#fff;border:1px solid rgba(255,255,255,.3);padding:2px 8px;text-transform:none;letter-spacing:0;font-size:11px;font-weight:700;width:fit-content}
 .bell .bn{display:flex;align-items:center;justify-content:center;text-align:center;padding:0;min-width:18px;height:18px;line-height:18px;box-sizing:border-box;font-variant-numeric:tabular-nums}
 </style>
 </head>
